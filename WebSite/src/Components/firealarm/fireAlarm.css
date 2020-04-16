@@ -1,0 +1,22 @@
+
+p{
+    margin-bottom: 0;
+}
+.card-text{
+    margin-bottom: 1rem;
+}
+
+.green-card{
+    background-color: rgb(65, 170, 65);
+}
+.red-card{
+    background-color: rgb(170, 65, 65);
+}
+.yello-card{
+    background-color: rgb(168, 170, 65);
+}
+
+.not-active-card{
+    background-color: rgb(192, 169, 166);
+    text-decoration: line-through;
+}

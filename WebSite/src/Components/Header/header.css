@@ -1,0 +1,12 @@
+#header-nav-bar{
+    background-color: #111111;
+}
+.navbar-title{
+    color: orangered;
+    text-align: center;
+
+}
+.nav-link{
+    text-decoration: none;
+    color: gold;
+}
