@@ -19,7 +19,7 @@ const nexmo = new Nexmo({
 });
 
 module.exports = async (res, fireAlarmData) => {
-    let userMobileNumbers = await user.find({}, { _id: 0, "mobileNumber": 1 }).catch((err) => res.status(500).send({success:false, msg: err }));
+    let userMobileNumbers = await user.find({}, { _id: 0, "mobileNumber": 1 }).catch((err) => res.status(500).send({success:false, err: err }));
     let userMobileNumbersArray = userMobileNumbers.map((value) => {
         return ('94' + value.mobileNumber);
     });

@@ -35,7 +35,7 @@ router.post('/signup', (req, res) => {
         }
         User.create(UserData, (err, savedData) => {
             if (err) {
-                res.status(400).send({ success: false, msg: err });
+                res.status(400).send({ success: false, err: err });
             } else {
                 let token = jwt.sign({ savedData }, secret, {
                     expiresIn: '4h'
@@ -48,6 +48,7 @@ router.post('/signup', (req, res) => {
     } else {
         return res.status(400).send({
             success: false,
+            msg:"userName, password,email,mobileNumber must be provided.",
             "userName": data.userName ? "Valid" : "Not Provided",
             "password": data.password ? "Valid" : "Not Provided",
             "email": data.email ? "Valid" : "Not Provided",
@@ -73,7 +74,7 @@ router.post('/login', (req, res) => {
         }
         User.findOne(userData, (err, dataFromDB) => {
             if (err) {
-                res.status(404).send({ success:false, msg: err });
+                res.status(404).send({ success:false, err: err });
             } else {
                 if (dataFromDB) {
                     let token = jwt.sign({ dataFromDB }, secret, {
@@ -89,6 +90,7 @@ router.post('/login', (req, res) => {
     } else {
         res.status(400).send({
             success:false,
+            msg:"userName, password must be provided.",
             "userName": data.userName ? "Provided" : "Not Provided",
             "password": data.password ? "Provided" : "Not Provided"
         })

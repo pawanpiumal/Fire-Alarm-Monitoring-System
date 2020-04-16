@@ -11,7 +11,7 @@ const password = require('../config/config').password;
 //This function takes the data of the Fire Alarm that has exceeded the CO2 and Smoke Limit
 //And send emails to all the admin users provided email accounts
 module.exports = async (res, fireAlarmData) => {
-    let userEmails = await user.find({}, { _id: 0, "email": 1 }).catch((err) => res.status(500).send({success:false, msg: err }));
+    let userEmails = await user.find({}, { _id: 0, "email": 1 }).catch((err) => res.status(500).send({success:false, err: err }));
     let userEmailsArray = userEmails.map((value) => {
         return value.email;
     });

@@ -2,14 +2,6 @@
 const express = require('express');
 const router = express.Router();
 
-//Importing JSON Web Token for user account authorization
-const jwt = require('jsonwebtoken');
-//Importing JSON Web Token Secret Key from config file
-const secret = require('../../config/config').secret;
-
-//importing NODEMAILER to send mails when Fire Alarm CO2 or Smoke level gets high
-const nodemailer = require("nodemailer");
-
 //Importing Fire Alarm Mongoose model
 const fireAlarm = require('../../models/FireAlarm');
 
@@ -40,7 +32,7 @@ router.post('/addFireAlarm', userAuthorization, (req, res) => {
         }
         //Inserting data to MongoDB
         fireAlarm.create(fireAlarmData, (err, savedData) => {
-            if (err) return res.status(400).send({ success: false, msg: err });
+            if (err) return res.status(400).send({ success: false, err: err });
             res.status(201).send({
                 msg: `FireAlarm Created at Floor ${savedData.floorNo} Room ${savedData.roomNo} @${savedData.lastUpdated}.`,
                 success: true,
@@ -52,6 +44,7 @@ router.post('/addFireAlarm', userAuthorization, (req, res) => {
         //sending a 400 (Bad Request) error when input data is not correct
         res.status(400).send({
             success: false,
+            msg:"roomNo or floorNo or both are not provided",
             roomNo: data.roomNo ? "Valid" : "Empty",
             floorNo: data.floorNo ? "Valid" : "Empty"
         });
@@ -74,7 +67,7 @@ router.patch('/update/:id', userAuthorization, async (req, res) => {
     if (data.roomNo || data.floorNo) {
         let error = false;
         //getting the previous data
-        let fireAlarmPervioudData = await fireAlarm.findOne({ _id: fireAlarmId }).catch((err) => { error = true; return res.status(404).send({ success: false, msg: err }); });
+        let fireAlarmPervioudData = await fireAlarm.findOne({ _id: fireAlarmId }).catch((err) => { error = true; return res.status(404).send({ success: false, err: err }); });
         if (error) {
             return;
         }
@@ -88,7 +81,7 @@ router.patch('/update/:id', userAuthorization, async (req, res) => {
             fireAlarm.updateOne({ _id: fireAlarmId }, fireAlarmNewData, (err) => {
                 //sending a 400(Bad Request) error if data types doesn't match or any other mongo error
                 if (err) {
-                    return res.status(400).send({ success: false, msg: err });
+                    return res.status(400).send({ success: false, err: err });
                 }
                 //returning a success message
                 res.status(200).send({
@@ -104,6 +97,7 @@ router.patch('/update/:id', userAuthorization, async (req, res) => {
         //returing 400 (Bad Request ) error if the input fields are not valid
         res.status(400).send({
             success: false,
+            msg:"roomNo and floorNo are not provided. Provide one of the field or both.",
             roomNo: "Empty",
             floorNo: "Empty"
         });
@@ -117,7 +111,7 @@ router.delete("/:id", userAuthorization, (req, res) => {
     const fireAlarmID = req.params.id;
     fireAlarm.findByIdAndDelete(fireAlarmID, (err, deletedData) => {
         if (err) {
-            return res.status(400).send({ success: false, msg: err });
+            return res.status(400).send({ success: false, err: err });
         } else {
             if (deletedData) {
                 //sending a 200 (Ok) if the firealarm deleted successfully
@@ -144,7 +138,7 @@ router.patch('/:id', async (req, res) => {
     let fireAlarmID = req.params.id;
     let data = req.body;
     let error = false;
-    let fireAlarmPrevious = await fireAlarm.findById(fireAlarmID).catch((err) => { if (err) error = true; return res.status(404).send({ success: false, msg: err }) });
+    let fireAlarmPrevious = await fireAlarm.findById(fireAlarmID).catch((err) => { if (err) error = true; return res.status(404).send({ success: false, err: err }) });
     if (error) {
         return
     }
@@ -152,7 +146,7 @@ router.patch('/:id', async (req, res) => {
         if (data.status) {
             fireAlarm.findByIdAndUpdate(fireAlarmID, { status: data.status }, (err) => {
                 if (err) {
-                    return res.status(400).send({ success: false, msg: err });
+                    return res.status(400).send({ success: false, err: err });
                 } else {
                     res.status(200).send({ success: true, msg: "Updated" });
                 }
@@ -179,7 +173,7 @@ router.patch('/:id', async (req, res) => {
                 }
                 fireAlarm.findByIdAndUpdate(fireAlarmID, fireAlarmNew, (err) => {
                     if (err) {
-                        return res.status(400).send({ success: false, msg: err });
+                        return res.status(400).send({ success: false, err: err });
                     } else {
                         res.status(200).send({ success: true, msg: "Updated" });
                     }
@@ -187,6 +181,7 @@ router.patch('/:id', async (req, res) => {
             } else {
                 res.status(400).send({
                     success: false,
+                    msg:"co2level and smokeLevel must be between 0 and 10",
                     co2Level: data.co2Level >= 0 && data.co2Level <= 10 ? "Valid" : "CO2 Level must be between 0 and 10",
                     smokeLevel: data.smokeLevel >= 0 && data.smokeLevel <= 10 ? "Valid" : "Smoke Level must be between 0 and 10",
                 });
@@ -194,6 +189,7 @@ router.patch('/:id', async (req, res) => {
         } else {
             res.status(400).send({
                 success: false,
+                msg:"co2level and smokeLevel or status mist be provided",
                 co2Level: data.co2Level ? "Valid" : "Empty",
                 smokeLevel: data.smokeLevel ? "Valid" : "Empty",
                 status: data.status ? "Valid" : "Empty",
@@ -210,13 +206,12 @@ router.patch('/:id', async (req, res) => {
 router.get("/", (req, res) => {
     fireAlarm.find((err, data) => {
         if (err) {
-            return res.status(400).send({ success: false, msg: err });
+            return res.status(400).send({ success: false, err: err });
         } else {
             res.status(200).send({ success: true, data });
         }
     });
 
 });
-
 
 module.exports = router;
