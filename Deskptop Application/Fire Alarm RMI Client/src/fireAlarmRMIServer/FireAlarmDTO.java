@@ -5,7 +5,7 @@ import java.util.List;
 
 //This Java Object is used to transfer data of fireAlarm 
 //between HTTP Requests and GUI
-public class FireAlarmDTO  implements Serializable{
+public class FireAlarmDTO implements Serializable {
 	/**
 	 * 
 	 */
