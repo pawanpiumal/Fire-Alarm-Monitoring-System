@@ -119,7 +119,7 @@ router.delete("/:id", userAuthorization, (req, res) => {
             } else {
                 //since the firealarm data is not existing in the DB the process is a success
                 //This is the Idempotent property of the DELETE HTTP request
-                res.status(400).send({ success: true, msg: "Already Deleted or Invalid firealarm ID" });
+                res.status(200).send({ success: true, msg: "Already Deleted or Invalid firealarm ID" });
             }
 
         }
