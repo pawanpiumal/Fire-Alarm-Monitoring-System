@@ -275,5 +275,6 @@ public class FireAlarmSensorImpl extends UnicastRemoteObject implements FireAlar
 			throw new IllegalStateException(e);
 		}
 	}
+	
 
 }
