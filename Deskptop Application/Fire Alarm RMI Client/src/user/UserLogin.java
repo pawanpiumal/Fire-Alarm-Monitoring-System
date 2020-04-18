@@ -1,11 +1,12 @@
 package user;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.rmi.RemoteException;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -13,6 +14,11 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
+
+import desktopClientGUI.FireAlarmClientMain;
+import userRMIServer.User;
+import userRMIServer.UserDTO;
+
 import javax.swing.SwingConstants;
 
 public class UserLogin extends JFrame {
@@ -24,11 +30,13 @@ public class UserLogin extends JFrame {
 	private JPanel contentPane;
 	private JTextField txtUsername;
 	private JTextField txtPassword;
+	private static User user;
 
 	/**
 	 * Launch the application.
 	 */
-	public static void executeMain() {
+	public static void executeMain(User userIn) {
+		user = userIn;
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
@@ -85,23 +93,52 @@ public class UserLogin extends JFrame {
 		contentPane.add(txtPassword);
 		txtPassword.setColumns(10);
 
-		JButton btnLogin = new JButton("Login");
-		btnLogin.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-
-				dispose();
-
-			}
-		});
-		btnLogin.setBounds(10, 146, 248, 23);
-		contentPane.add(btnLogin);
-
 		JLabel lblError = new JLabel("");
 		lblError.setHorizontalAlignment(SwingConstants.CENTER);
 		lblError.setForeground(Color.RED);
 		lblError.setFont(new Font("Tahoma", Font.BOLD, 11));
 		lblError.setBounds(10, 121, 248, 14);
 		contentPane.add(lblError);
+
+		JButton btnLogin = new JButton("Login");
+		btnLogin.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (!txtUsername.getText().equals("")) {
+					if (!txtPassword.getText().equals("")) {
+						UserDTO usdto = new UserDTO();
+						usdto.setUserName(txtUsername.getText());
+						usdto.setPassword(txtPassword.getText());
+						try {
+							UserDTO loggedInDTO = user.login(usdto);
+							if (loggedInDTO.getSuccess()) {
+								lblError.setText("Logged In Successfully");
+								FireAlarmClientMain.registerLogin(loggedInDTO);
+								dispose();
+							} else {
+								if (loggedInDTO.getMsg() != null) {
+									lblError.setText("Error - " + loggedInDTO.getMsg());
+								} else {
+									lblError.setText("Error");
+								}
+							}
+						} catch (RemoteException e1) {
+							lblError.setText("Error Login");
+							e1.printStackTrace();
+						} catch (IOException e1) {
+							lblError.setText("Error Login");
+							e1.printStackTrace();
+						}
+
+					} else {
+						lblError.setText("Password is invalid");
+					}
+				} else {
+					lblError.setText("Username is invalid");
+				}
+			}
+		});
+		btnLogin.setBounds(10, 146, 248, 23);
+		contentPane.add(btnLogin);
 
 	}
 

@@ -14,10 +14,12 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 import com.google.gson.Gson;
 
+import fireAlarm.FireAlarmDesktop;
 import fireAlarmRMIServer.FireAlarmDTO;
 
 public class FireAlarmSensorImpl extends UnicastRemoteObject implements FireAlarmSensor {
@@ -26,6 +28,8 @@ public class FireAlarmSensorImpl extends UnicastRemoteObject implements FireAlar
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+
+	private static volatile List<FireAlarmDesktop> fireAlaramClientList = new ArrayList<FireAlarmDesktop>();
 
 	public FireAlarmSensorImpl() throws RemoteException {
 	}
@@ -110,15 +114,13 @@ public class FireAlarmSensorImpl extends UnicastRemoteObject implements FireAlar
 	}
 
 	@Override
-	public void registerFireAlarmDesktopClient() throws RemoteException, IOException {
-		// TODO Auto-generated method stub
-
+	public void registerFireAlarmDesktopClient(FireAlarmDesktop fireAlarm) throws RemoteException, IOException {
+		fireAlaramClientList.add(fireAlarm);
 	}
 
 	@Override
-	public void unregisterFireAlarmDesktopClient() throws RemoteException, IOException {
-		// TODO Auto-generated method stub
-
+	public void unregisterFireAlarmDesktopClient(FireAlarmDesktop fireAlarm) throws RemoteException, IOException {
+		fireAlaramClientList.remove(fireAlarm);
 	}
 
 	@Override
@@ -202,8 +204,52 @@ public class FireAlarmSensorImpl extends UnicastRemoteObject implements FireAlar
 		return null;
 	}
 
-	public void notifyAllListners() {
+	public void checkFireAlarmSensors() throws IOException {
+		// getting all fireAlarmDetails
+		URL url = new URL("http://localhost:5000/api/firealarm/");
+		HttpURLConnection con = (HttpURLConnection) url.openConnection();
+		con.setRequestMethod("GET");
+		// Setting the Request header to accept response in JSON Format
+		con.setRequestProperty("Accept", "application/json");
 
+		// getting the response status code
+		int responseCode = con.getResponseCode();
+		// Reading the response
+		Reader br = null;
+		// checking the response is a success or an error
+		if (responseCode >= 200 && responseCode <= 299) {
+			br = new BufferedReader(new InputStreamReader(con.getInputStream(), "utf-8"));
+		} else {
+			br = new BufferedReader(new InputStreamReader(con.getErrorStream(), "utf-8"));
+		}
+
+		// parsing the JSON response to a Java Object
+		Gson gson = new Gson();
+		try {
+			FireAlarmDTO fireAlarmDTO = gson.fromJson(br, FireAlarmDTO.class);
+			if (fireAlarmDTO != null) {
+				for(FireAlarmDTO fdt:fireAlarmDTO.getData()){
+					if(fdt.getSmokeLevel() >5 || fdt.getCo2Level()>5) {
+						if(fdt.getStatus().equals("Active")) {
+							notifyAllListners(fdt);
+						}
+					}
+				}
+				
+			}
+		} catch (Exception e) {
+			System.out.println(e);
+		}
+	}
+
+	public void notifyAllListners(FireAlarmDTO fireDto) {
+		for (FireAlarmDesktop fireAlarmDesktop : fireAlaramClientList) {
+			try {
+				fireAlarmDesktop.showAlert(fireDto);
+			} catch (RemoteException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	// method allowing to use PATCH in HttpURLConnection

@@ -14,10 +14,15 @@ import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
 
+import fireAlarm.AddFireAlarm;
+import fireAlarm.EditFireAlarm;
+import fireAlarm.FireAlarmDesktop;
 import fireAlarmRMIServer.FireAlarmDTO;
 import fireAlarmRMIServer.FireAlarmSensor;
 import user.UserLogin;
 import user.UserRegistration;
+import userRMIServer.User;
+import userRMIServer.UserDTO;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -25,20 +30,33 @@ import java.io.IOException;
 import java.rmi.Naming;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
-import java.util.Vector;
+import java.rmi.server.UnicastRemoteObject;
 
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
-public class FireAlarmClientMain {
+public class FireAlarmClientMain extends UnicastRemoteObject implements FireAlarmDesktop {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private JFrame frame;
 	private JTable table_1;
 	private JScrollPane scrollPane;
-	private static FireAlarmSensor sensor;
+	private static FireAlarmSensor fireAlarm;
+	private static User user;
 	private JLabel lblNextUpdateIn;
 	private DefaultTableModel tdm;
+	private static JButton btnAddNewFire;
+	private static JButton btnEditFireAlarm;
+	private static JLabel lblLogin;
+	private static JLabel lblRegister;
+
+	private static UserDTO UserDTO;
+
+	private static FireAlarmClientMain clientMain;
 
 	/**
 	 * Launch the application.
@@ -47,16 +65,20 @@ public class FireAlarmClientMain {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					FireAlarmClientMain window = new FireAlarmClientMain();
-					window.frame.setVisible(true);
-					window.frame.setResizable(false);
+					clientMain = new FireAlarmClientMain();
+					clientMain.frame.setVisible(true);
 
 					int PORT = 3000;
 					String fireAlarmRegistration = "//localhost:" + PORT + "/FireAlarm";
+					String userRegistration = "//localhost:" + PORT + "/User";
 
-					Remote remoteService = Naming.lookup(fireAlarmRegistration);
-					sensor = (FireAlarmSensor) remoteService;
+					Remote fireAlarmService = Naming.lookup(fireAlarmRegistration);
+					fireAlarm = (FireAlarmSensor) fireAlarmService;
 
+					Remote userService = Naming.lookup(userRegistration);
+					user = (User) userService;
+					
+					fireAlarm.registerFireAlarmDesktopClient(clientMain);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -67,7 +89,7 @@ public class FireAlarmClientMain {
 	/**
 	 * Create the application.
 	 */
-	public FireAlarmClientMain() {
+	public FireAlarmClientMain() throws RemoteException {
 		initialize();
 		refreshData();
 	}
@@ -97,7 +119,7 @@ public class FireAlarmClientMain {
 		lblTitle.setForeground(Color.getHSBColor(titileColorHSB[0], titileColorHSB[1], titileColorHSB[2]));
 		frame.getContentPane().add(lblTitle);
 
-		JLabel lblLogin = new JLabel("Login");
+		lblLogin = new JLabel("Login");
 
 		lblLogin.setOpaque(true);
 		float loginRegeisterColorHSB[] = Color.RGBtoHSB(255, 215, 0, null);
@@ -124,11 +146,11 @@ public class FireAlarmClientMain {
 
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				UserLogin.executeMain();
+				UserLogin.executeMain(user);
 			}
 		});
 
-		JLabel lblRegister = new JLabel("Register");
+		lblRegister = new JLabel("Register");
 
 		lblRegister.setOpaque(true);
 		lblRegister.setForeground(
@@ -152,7 +174,7 @@ public class FireAlarmClientMain {
 
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				UserRegistration.executeMain();
+				UserRegistration.executeMain(user);
 			}
 		});
 
@@ -181,64 +203,119 @@ public class FireAlarmClientMain {
 		lblNextUpdateIn.setBounds(20, 658, 208, 24);
 		frame.getContentPane().add(lblNextUpdateIn);
 
-		JButton btnAddNewFire = new JButton("Add New Fire Alarm");
+		btnAddNewFire = new JButton("Add New Fire Alarm");
 		btnAddNewFire.setEnabled(false);
 		btnAddNewFire.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				AddFireAlarm.executeMain(fireAlarm, UserDTO);
 			}
 		});
 		btnAddNewFire.setBounds(993, 658, 163, 23);
 		frame.getContentPane().add(btnAddNewFire);
 
-		JButton btnEditFireAlarm = new JButton("Edit Fire Alarm");
+		btnEditFireAlarm = new JButton("Edit Fire Alarm");
 		btnEditFireAlarm.setEnabled(false);
 		btnEditFireAlarm.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				if (table_1.getSelectedRow() != -1) {
+					int row = table_1.getSelectedRow();
+					EditFireAlarm.executeMain(fireAlarm, UserDTO, (String) table_1.getValueAt(row, 0),
+							(Integer.valueOf((String) table_1.getValueAt(row, 2))),
+							(Integer.valueOf((String) table_1.getValueAt(row, 3))));
+				} else {
+					JOptionPane.showMessageDialog(frame, "Select a Row to Edit.", "Error", JOptionPane.ERROR_MESSAGE);
+
+				}
+
 			}
 		});
 		btnEditFireAlarm.setBounds(1177, 658, 163, 23);
 		frame.getContentPane().add(btnEditFireAlarm);
 
+		frame.addWindowListener(new java.awt.event.WindowAdapter() {
+			@Override
+			public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+				if (JOptionPane.showConfirmDialog(frame, "Are you sure you want to close this window?", "Close Window?",
+						JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
+					try {
+						fireAlarm.unregisterFireAlarmDesktopClient(clientMain);
+					} catch (RemoteException e) {
+						e.printStackTrace();
+					} catch (IOException e) {
+						e.printStackTrace();
+					} finally {
+						System.exit(0);
+					}
+
+				}
+			}
+		});
+
 	}
 
-	private int time = 0;
+	private static int timetoRefresh = 0;
+
+	public static void setTime(int timeIn) {
+		timetoRefresh = timeIn;
+	}
 
 	public void refreshData() {
-		Thread t = new Thread(new Runnable() {
+
+		Thread thre = new Thread(new Runnable() {
 
 			@Override
 			public void run() {
+
 				for (;;) {
 					try {
 						Thread.sleep(1000);
-						lblNextUpdateIn.setText("Next Update In : " + time);
-						
-						if (time <= 0) {
+						lblNextUpdateIn.setText("Next Update In : " + timetoRefresh);
+						timetoRefresh -= 1;
+						if (timetoRefresh <= 0) {
 							try {
 								tdm.setRowCount(0);
-								for(FireAlarmDTO fdto: sensor.getFireSensorDetails()) {
-									Object[] obj = {fdto.getId(),fdto.getStatus(),fdto.getRoomNo(),fdto.getFloorNo(),fdto.getSmokeLevel(),fdto.getCo2Level(),fdto.getLastUpdated()};
+								for (FireAlarmDTO fdto : fireAlarm.getFireSensorDetails()) {
+									Object[] obj = { fdto.getId(), fdto.getStatus(), fdto.getRoomNo(),
+											fdto.getFloorNo(), fdto.getSmokeLevel(), fdto.getCo2Level(),
+											fdto.getLastUpdated() };
 									tdm.addRow(obj);
 								}
 							} catch (RemoteException e1) {
-								JOptionPane.showMessageDialog(frame, "Error Getting Data.", "Error", JOptionPane.ERROR_MESSAGE);
+								JOptionPane.showMessageDialog(frame, "Error Getting Data.", "Error",
+										JOptionPane.ERROR_MESSAGE);
 								e1.printStackTrace();
 							} catch (IOException e1) {
-								JOptionPane.showMessageDialog(frame, "Error Getting Data.", "Error", JOptionPane.ERROR_MESSAGE);
+								JOptionPane.showMessageDialog(frame, "Error Getting Data.", "Error",
+										JOptionPane.ERROR_MESSAGE);
 								e1.printStackTrace();
-							}finally {
-								time=30;
+							} finally {
+								timetoRefresh = 30;
 							}
 						}
-						time--;
 					} catch (InterruptedException e) {
-
 						e.printStackTrace();
 					}
 				}
 			}
 		});
 
-		t.start();
+		thre.start();
 	}
+
+	public static void registerLogin(UserDTO user) {
+		UserDTO = user;
+		btnAddNewFire.setEnabled(true);
+		btnEditFireAlarm.setEnabled(true);
+		lblLogin.setVisible(false);
+		lblRegister.setVisible(false);
+
+	}
+
+	@Override
+	public void showAlert(FireAlarmDTO fireDto) throws RemoteException {
+		JOptionPane.showMessageDialog(frame, "Room No " + fireDto.getRoomNo() + ", Floor No " + fireDto.getFloorNo()
+				+ " has exceeded CO2 or Smoke Level Limit", "Alert", JOptionPane.WARNING_MESSAGE);
+
+	}
+
 }

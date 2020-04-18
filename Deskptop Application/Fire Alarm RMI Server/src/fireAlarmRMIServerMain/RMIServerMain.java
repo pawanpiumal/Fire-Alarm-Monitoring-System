@@ -1,12 +1,14 @@
 package fireAlarmRMIServerMain;
 
+import java.io.IOException;
 import java.rmi.Naming;
+import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 
+import fireAlarmRMIServer.FireAlarmDTO;
 import fireAlarmRMIServer.FireAlarmSensor;
 import fireAlarmRMIServer.FireAlarmSensorImpl;
 import userRMIServer.User;
-import userRMIServer.UserDTO;
 import userRMIServer.UserImpl;
 
 public class RMIServerMain {
@@ -19,10 +21,10 @@ public class RMIServerMain {
 		try {
 			FireAlarmSensor sensor = new FireAlarmSensorImpl();
 			User user = new UserImpl();
-			
-			int PORT =3000;
+
+			int PORT = 3000;
 			LocateRegistry.createRegistry(PORT);
-			String registry = "localhost:"+PORT;
+			String registry = "localhost:" + PORT;
 
 			String fireAlarmRegistration = "rmi://" + registry + "/FireAlarm";
 			String userRegistration = "rmi://" + registry + "/User";
@@ -31,11 +33,41 @@ public class RMIServerMain {
 			Naming.rebind(userRegistration, user);
 
 			System.out.println("RMI Server Running");
-
+			int time = 5000;
+			checkFireAlarms(time);
+			System.out.println("Checking for Fire Alarm CO2, Smoke Level Exceeds in Every " + time + "ms");
 		} catch (Exception e) {
 			System.err.println("Error - " + e);
 		}
 
+	}
+	private static FireAlarmSensorImpl sensor ;
+	public static void checkFireAlarms(int time) {
+		try {
+			sensor = new FireAlarmSensorImpl();
+		} catch (RemoteException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		Thread th = new Thread(new Runnable() {
+			@Override
+			public void run() {
+
+				for (;;) {
+					try {
+						sensor.checkFireAlarmSensors();
+						Thread.sleep(time);
+					} catch (IOException e) {
+						e.printStackTrace();
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+
+			}
+		});
+
+		th.start();
 	}
 
 }
