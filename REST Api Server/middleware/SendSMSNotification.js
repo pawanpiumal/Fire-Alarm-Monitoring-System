@@ -26,7 +26,6 @@ module.exports = async (res, fireAlarmData) => {
     userMobileNumbersArray = userMobileNumbersArray.filter((value, index, self) => {
         return self.indexOf(value) === index;
     });
-    console.log(userMobileNumbersArray.toString());
     const from = 'Fire Alarm Warning';
 
     const text = `Fire Alarm Warning

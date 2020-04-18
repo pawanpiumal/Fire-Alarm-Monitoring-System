@@ -158,7 +158,6 @@ router.patch('/:id', async (req, res) => {
                     "smokeLevel": data.smokeLevel,
                     "lastUpdated":new Date()
                 }
-                console.log(fireAlarmNew);
                 if (data.co2Level > 5 || data.smokeLevel > 5) {
                     //sending the Email and the SMS only one time
                     //The email & sms is sent again only if the co2 level and smoke level
