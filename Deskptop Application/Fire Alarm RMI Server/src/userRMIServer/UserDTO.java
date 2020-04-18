@@ -5,6 +5,10 @@ import java.io.Serializable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+//This DTO is used to transfer user details 
+//between RMI Server and RMI Client
+//It is also used to store User details in the RMI Server which are sent by the 
+//REST API
 public class UserDTO implements Serializable{
 
 	/**

@@ -10,10 +10,13 @@ import fireAlarmRMIServer.FireAlarmSensorImpl;
 import userRMIServer.User;
 import userRMIServer.UserImpl;
 
+//THis is the main method of RMI Server
+
 public class RMIServerMain {
 
 	public static void main(String[] args) {
-
+		
+		//Setting the security policy
 		System.setProperty("java.security.policy", "file:allowall.policy");
 		System.out.println("Loading Fire Alarm  service");
 
@@ -21,6 +24,7 @@ public class RMIServerMain {
 			FireAlarmSensor sensor = new FireAlarmSensorImpl();
 			User user = new UserImpl();
 
+			//Registering In RMI registry 
 			int PORT = 3000;
 			LocateRegistry.createRegistry(PORT);
 			String registry = "localhost:" + PORT;
@@ -32,6 +36,7 @@ public class RMIServerMain {
 			Naming.rebind(userRegistration, user);
 
 			System.out.println("RMI Server Running");
+			//Used to check the fire alarm sensor details in intervals
 			int time = 5000;
 			checkFireAlarms(time);
 			System.out.println("Checking for Fire Alarm CO2, Smoke Level Exceeds in Every " + time + "ms");

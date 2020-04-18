@@ -24,7 +24,9 @@ import java.awt.event.ActionEvent;
 
 public class AddFireAlarm extends JFrame {
 
-	/**
+	/*
+	 * 
+	 * This JFrame is used to Add Fire Alarms=
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
@@ -103,6 +105,8 @@ public class AddFireAlarm extends JFrame {
 		lblError.setBounds(10, 121, 248, 14);
 		contentPane.add(lblError);
 
+		//Add a fire alarm if the required fields are set
+		//or else show an error
 		JButton btnAddFireAlarm = new JButton("Add Fire Alarm");
 		btnAddFireAlarm.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {

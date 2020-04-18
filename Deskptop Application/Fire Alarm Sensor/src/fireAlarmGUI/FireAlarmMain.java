@@ -22,6 +22,9 @@ import fireAlarmSensor.FireAlarmImpl;
 
 public class FireAlarmMain {
 
+	// This is the Fire Alarm Sensor GUI
+	// This is used to manipulate the sensor details
+
 	private JFrame frame;
 	private JLabel lblTime;
 	private JComboBox<String> comboBox;
@@ -247,6 +250,8 @@ public class FireAlarmMain {
 
 	private int time = 30;
 
+	// Sending the sensor details in 30 second intervals
+
 	public void updateDataInIntervals() {
 		Thread t = new Thread(new Runnable() {
 
@@ -278,19 +283,19 @@ public class FireAlarmMain {
 										JOptionPane.showMessageDialog(frame, "Error Updating Data.", "Error",
 												JOptionPane.ERROR_MESSAGE);
 										e2.printStackTrace();
-									}finally{
-										time=30;
+									} finally {
+										time = 30;
 									}
 
 								}
-							}else {
-								time=10;
+							} else {
+								time = 10;
 							}
 						}
 						time--;
 					} catch (InterruptedException e) {
 						e.printStackTrace();
-					} catch(Exception e2) {
+					} catch (Exception e2) {
 						e2.printStackTrace();
 					}
 
@@ -300,6 +305,5 @@ public class FireAlarmMain {
 
 		t.start();
 	}
-	
-	
+
 }

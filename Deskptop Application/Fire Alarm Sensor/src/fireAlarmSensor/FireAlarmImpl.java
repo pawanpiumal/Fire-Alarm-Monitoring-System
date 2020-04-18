@@ -20,6 +20,11 @@ import java.net.URL;
 
 public class FireAlarmImpl implements FireAlarm {
 
+	// This method is used to set the fire alarm details for the fire alarm sensor
+	// dummy GUI
+	// It gets all the fire alarm sensor details first and then select the relevant
+	// fire alarm sensor
+	// details from them and returns it using a Fire Alarm DTO
 	@Override
 	public FireAlarmDTO getFireAlarmData(String id) throws IOException {
 		// getting all fireAlarmDetails
@@ -58,9 +63,12 @@ public class FireAlarmImpl implements FireAlarm {
 		return null;
 	}
 
+	// This method is used to set the co2 level and smoke level of a fire alarm
+	// sensor
+	// it returns the success status and the message
 	@Override
 	public FireAlarmDTO updateFireAlarmData(String id, int co2Level, int smokeLevel) throws IOException {
-		// Setting the URL to get the fireAlarmData
+		// Setting the REST API URL to PATCH Request
 		URL url = new URL("http://localhost:5000/api/firealarm/" + id);
 		// Opening a Connection
 		HttpURLConnection con = (HttpURLConnection) url.openConnection();
@@ -102,9 +110,12 @@ public class FireAlarmImpl implements FireAlarm {
 		return null;
 	}
 
+	// This method is used to set the status of a fire alarm
+	// sensor
+	// it returns the success status and the message
 	@Override
 	public FireAlarmDTO updateFireAlarmData(String id, String status) throws IOException {
-		// Setting the URL to get the fireAlarmData
+		// Setting the REST API URL to PATCH Request
 		URL url = new URL("http://localhost:5000/api/firealarm/" + id);
 		// Opening a Connection
 		HttpURLConnection con = (HttpURLConnection) url.openConnection();
@@ -148,7 +159,10 @@ public class FireAlarmImpl implements FireAlarm {
 
 		return null;
 	}
-
+	
+	//This method is used to get the all the FireAlarm Ids
+	//This fire alarm ids displayed in the combo box
+	//Using the id's the user can get sensor details of the fire alarms
 	@Override
 	public ArrayList<String> getFireAlarmIDs() throws IOException {
 		// getting all fireAlarmDetails

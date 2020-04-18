@@ -24,7 +24,7 @@ import javax.swing.SwingConstants;
 public class UserRegistration extends JFrame {
 
 	/**
-	 * 
+	 * This is the JFrame used to enable User registration
 	 */
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
@@ -136,6 +136,8 @@ public class UserRegistration extends JFrame {
 		lblError.setBounds(10, 265, 248, 14);
 		contentPane.add(lblError);
 
+		//Register a user if the required fields are valid 
+		//or else show an error
 		JButton btnSignup = new JButton("SignUp");
 		btnSignup.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {

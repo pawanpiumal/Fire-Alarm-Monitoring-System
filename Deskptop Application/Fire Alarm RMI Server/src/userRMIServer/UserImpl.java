@@ -15,7 +15,7 @@ import com.google.gson.Gson;
 public class UserImpl extends UnicastRemoteObject implements User {
 
 	/**
-	 * 
+	 * This is where the RMI Server user interface implemented
 	 */
 	private static final long serialVersionUID = 1L;
 
@@ -23,9 +23,12 @@ public class UserImpl extends UnicastRemoteObject implements User {
 
 	}
 
+	//This method is used to register a client
+	//When success it returns a user DTO with the success status,message and the authorization token
+	//When failure it returns a user DTO with the success status and a message
 	@Override
 	public UserDTO register(UserDTO user) throws RemoteException, IOException {
-		// Setting the URL to get the fireAlarmData
+		// Setting the REST API URL to register a client
 		URL url = new URL("http://localhost:5000/api/users/signup");
 		// Opening a Connection
 		HttpURLConnection con = (HttpURLConnection) url.openConnection();
@@ -66,9 +69,13 @@ public class UserImpl extends UnicastRemoteObject implements User {
 		return null;
 	}
 
+
+	//This method is used to login a client
+	//When success it returns a user DTO with the success status,message and the authorization token
+	//When failure it returns a user DTO with the success status and a message
 	@Override
 	public UserDTO login(UserDTO user) throws RemoteException, IOException {
-		// Setting the URL to get the fireAlarmData
+		// Setting the REST API URL to login
 		URL url = new URL("http://localhost:5000/api/users/login");
 		// Opening a Connection
 		HttpURLConnection con = (HttpURLConnection) url.openConnection();

@@ -25,18 +25,22 @@ import fireAlarmRMIServer.FireAlarmDTO;
 public class FireAlarmSensorImpl extends UnicastRemoteObject implements FireAlarmSensor {
 
 	/**
-	 * 
+	 * This is where the RMI Server functions are implemented
+	 *
 	 */
 	private static final long serialVersionUID = 1L;
 
+	// Store the RMI Client list to send alerts
 	private static volatile List<FireAlarmDesktop> fireAlaramClientList = new ArrayList<FireAlarmDesktop>();
 
 	public FireAlarmSensorImpl() throws RemoteException {
 	}
 
+	// This method is used to get all the fire alarm sensor details
+	// It exports a Fire Alarm DTO array
 	@Override
 	public ArrayList<FireAlarmDTO> getFireSensorDetails() throws RemoteException, IOException {
-		// getting all fireAlarmDetails
+		// Setting the REST Api URL whichis used to do the GET request
 		URL url = new URL("http://localhost:5000/api/firealarm/");
 		HttpURLConnection con = (HttpURLConnection) url.openConnection();
 		con.setRequestMethod("GET");
@@ -45,9 +49,10 @@ public class FireAlarmSensorImpl extends UnicastRemoteObject implements FireAlar
 
 		// getting the response status code
 		int responseCode = con.getResponseCode();
-		// Reading the response
+
 		Reader br = null;
 		// checking the response is a success or an error
+		// Reading the success or error response
 		if (responseCode >= 200 && responseCode <= 299) {
 			br = new BufferedReader(new InputStreamReader(con.getInputStream(), "utf-8"));
 		} else {
@@ -69,9 +74,12 @@ public class FireAlarmSensorImpl extends UnicastRemoteObject implements FireAlar
 		return null;
 	}
 
+	// This method is used to add a new fire alarm
+	// It returns the success status and success message if success
+	// or a fail message if failed
 	@Override
 	public FireAlarmDTO addFireAlarm(String token, int roomNo, int floorNo) throws RemoteException, IOException {
-		// Setting the URL to get the fireAlarmData
+		// Setting the URL to post request to add the new fire alarm
 		URL url = new URL("http://localhost:5000/api/firealarm/addFireAlarm");
 		// Opening a Connection
 		HttpURLConnection con = (HttpURLConnection) url.openConnection();
@@ -79,6 +87,7 @@ public class FireAlarmSensorImpl extends UnicastRemoteObject implements FireAlar
 		con.setRequestMethod("POST");
 		// Setting the Request Content Type
 		con.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
+		// Set the Authorization header
 		con.setRequestProperty("Authorization", "Bearer " + token);
 		// Setting the Request header to accept response in JSON Format
 		con.setRequestProperty("Accept", "application/json");
@@ -113,21 +122,29 @@ public class FireAlarmSensorImpl extends UnicastRemoteObject implements FireAlar
 
 	}
 
+	// This method is used to register a new desktop client
 	@Override
 	public void registerFireAlarmDesktopClient(FireAlarmDesktop fireAlarm) throws RemoteException, IOException {
 		fireAlaramClientList.add(fireAlarm);
 	}
 
+	// THis method is used to unregister a desktop client
 	@Override
 	public void unregisterFireAlarmDesktopClient(FireAlarmDesktop fireAlarm) throws RemoteException, IOException {
 		fireAlaramClientList.remove(fireAlarm);
 	}
 
+	// This method is used to edit a fire alarm details
+	// It uses PATCH HTTP request type
+	// Since it is not provided in HTTP URL Connection
+	// THis method uses a way around the problem
+	// Using this prints a warning but the PATCH request works
+	// Method returns a Success status and a message
 	@Override
 	public FireAlarmDTO editFireAlarmDetails(String id, String token, int roomNo, int floorNo)
 			throws RemoteException, IOException {
 
-		// Setting the URL to get the fireAlarmData
+		// Setting the URL to Make the PATCH request
 		URL url = new URL("http://localhost:5000/api/firealarm/update/" + id);
 		// Opening a Connection
 		HttpURLConnection con = (HttpURLConnection) url.openConnection();
@@ -137,6 +154,7 @@ public class FireAlarmSensorImpl extends UnicastRemoteObject implements FireAlar
 		con.setRequestMethod("PATCH");
 		// Setting the Request Content Type
 		con.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
+		// Setting the Authorization header
 		con.setRequestProperty("Authorization", "Bearer " + token);
 		// Setting the Request header to accept response in JSON Format
 		con.setRequestProperty("Accept", "application/json");
@@ -170,14 +188,17 @@ public class FireAlarmSensorImpl extends UnicastRemoteObject implements FireAlar
 		return null;
 	}
 
+	// This method is to delete FIre Alarm Sensors
+	// This method returns a success status and a message
 	@Override
 	public FireAlarmDTO deleteFireAlarmDetails(String id, String token) throws RemoteException, IOException {
-		// Setting the DELETE HTTP Request
+		// Setting the DELETE HTTP Request REST API URL
 		URL url = new URL("http://localhost:5000/api/firealarm/" + id);
 		HttpURLConnection con = (HttpURLConnection) url.openConnection();
 		con.setRequestMethod("DELETE");
 		// Setting the Request header to accept response in JSON Format
 		con.setRequestProperty("Accept", "application/json");
+		// Setting the Authorization token
 		con.setRequestProperty("Authorization", "Bearer " + token);
 		// getting the response status code
 		int responseCode = con.getResponseCode();
@@ -204,6 +225,10 @@ public class FireAlarmSensorImpl extends UnicastRemoteObject implements FireAlar
 		return null;
 	}
 
+	//This method is periodically run by the RMI Server Main method to check for fire alarm smoke and CO2 levels
+	//If one or many fire alarms exceeds the CO2 or smoke level
+	//this method runs the notify all listeners method which shows an alert in the desktop client
+	//This method only invokes the listeners if the fire alarm sensors status is active
 	public void checkFireAlarmSensors() throws IOException {
 		// getting all fireAlarmDetails
 		URL url = new URL("http://localhost:5000/api/firealarm/");
@@ -228,20 +253,23 @@ public class FireAlarmSensorImpl extends UnicastRemoteObject implements FireAlar
 		try {
 			FireAlarmDTO fireAlarmDTO = gson.fromJson(br, FireAlarmDTO.class);
 			if (fireAlarmDTO != null) {
-				for(FireAlarmDTO fdt:fireAlarmDTO.getData()){
-					if(fdt.getSmokeLevel() >5 || fdt.getCo2Level()>5) {
-						if(fdt.getStatus().equals("Active")) {
+				for (FireAlarmDTO fdt : fireAlarmDTO.getData()) {
+					if (fdt.getSmokeLevel() > 5 || fdt.getCo2Level() > 5) {
+						if (fdt.getStatus().equals("Active")) {
 							notifyAllListners(fdt);
 						}
 					}
 				}
-				
+
 			}
 		} catch (Exception e) {
 			System.out.println(e);
 		}
 	}
 
+	//This method is used to access the remote method in Desktop clients to 
+	//show the alert
+	//This method is invoked by the checkFireAlarmSensors Method
 	public void notifyAllListners(FireAlarmDTO fireDto) {
 		for (FireAlarmDesktop fireAlarmDesktop : fireAlaramClientList) {
 			try {
@@ -275,6 +303,5 @@ public class FireAlarmSensorImpl extends UnicastRemoteObject implements FireAlar
 			throw new IllegalStateException(e);
 		}
 	}
-	
 
 }

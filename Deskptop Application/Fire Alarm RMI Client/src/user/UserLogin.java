@@ -24,7 +24,7 @@ import javax.swing.SwingConstants;
 public class UserLogin extends JFrame {
 
 	/**
-	 * 
+	 * This is the User Login JFrame
 	 */
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
@@ -100,6 +100,8 @@ public class UserLogin extends JFrame {
 		lblError.setBounds(10, 121, 248, 14);
 		contentPane.add(lblError);
 
+		//LogIn a user if the user name and password are valid
+		//or else show an error
 		JButton btnLogin = new JButton("Login");
 		btnLogin.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {

@@ -24,7 +24,9 @@ import userRMIServer.UserDTO;
 public class EditFireAlarm extends JFrame {
 
 	/**
-	 * 
+	 * This JFrame is used to edit fire alarm details
+	 * The table's selected row information are already set to the
+	 *  required fields that need to be edited
 	 */
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
@@ -109,7 +111,9 @@ public class EditFireAlarm extends JFrame {
 		lblError.setFont(new Font("Tahoma", Font.BOLD, 11));
 		lblError.setBounds(10, 121, 248, 14);
 		contentPane.add(lblError);
-
+		
+		//Editing fire alarm details if the required field data are valid
+		//or else show an error
 		JButton btnEditFireAlarm = new JButton("Edit Fire Alarm");
 		btnEditFireAlarm.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {

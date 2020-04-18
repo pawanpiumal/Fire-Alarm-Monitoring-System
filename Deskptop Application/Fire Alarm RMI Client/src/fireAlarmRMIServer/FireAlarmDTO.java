@@ -5,6 +5,7 @@ import java.util.List;
 
 //This Java Object is used to transfer data of fireAlarm 
 //between HTTP Requests and GUI
+//This DTO class is saved in both RMI client and Server Sides
 public class FireAlarmDTO implements Serializable {
 	/**
 	 * 

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 import fireAlarm.FireAlarmDesktop;
 
+//This Interface is used to give RMI Clients the access to RMI Server
 public interface FireAlarmSensor extends java.rmi.Remote{
 	
 	public ArrayList<FireAlarmDTO> getFireSensorDetails() throws java.rmi.RemoteException , IOException;
