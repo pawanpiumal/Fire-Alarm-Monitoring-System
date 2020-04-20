@@ -4,6 +4,7 @@ import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 import javax.swing.border.EmptyBorder;
 
 import desktopClientGUI.FireAlarmClientMain;
@@ -115,12 +116,12 @@ public class UserRegistration extends JFrame {
 		contentPane.add(txtEmail);
 		txtEmail.setColumns(10);
 
-		txtPassword = new JTextField();
+		txtPassword = new JPasswordField();
 		txtPassword.setBounds(116, 139, 142, 20);
 		contentPane.add(txtPassword);
 		txtPassword.setColumns(10);
 
-		txtConfirmpassword = new JTextField();
+		txtConfirmpassword = new JPasswordField();
 		txtConfirmpassword.setBounds(116, 183, 142, 20);
 		contentPane.add(txtConfirmpassword);
 		txtConfirmpassword.setColumns(10);
@@ -172,10 +173,16 @@ public class UserRegistration extends JFrame {
 											} catch (IOException e1) {
 												lblError.setText("Error Registration");
 												e1.printStackTrace();
+											}catch(Exception e1) {
+												lblError.setText("Error Registration");
+												e1.printStackTrace();
 											}
 										} catch (NumberFormatException ex) {
 											lblError.setText("Mobile Number must be a Number");
 											ex.printStackTrace();
+										} catch(Exception ex1) {
+											lblError.setText("Error Registration");
+											ex1.printStackTrace();
 										}
 									} else {
 										lblError.setText("Password is mismatch");

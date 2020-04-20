@@ -93,7 +93,7 @@ public class FireAlarmMain {
 		comboBox.setSelectedIndex(-1);
 		frame.getContentPane().add(comboBox);
 
-		JButton btnConnect = new JButton("Connect");
+		JButton btnConnect = new JButton("Refresh Data");
 		btnConnect.setBackground(Color.LIGHT_GRAY);
 
 		btnConnect.setBounds(10, 44, 253, 23);
@@ -194,6 +194,26 @@ public class FireAlarmMain {
 
 		btnConnect.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				comboBox.removeAllItems();
+				try {
+					List<String> IdList = fireAlarm.getFireAlarmIDs();
+					for (String id : IdList) {
+						comboBox.addItem(id);
+					}
+
+				} catch (IOException e1) {
+					JOptionPane.showMessageDialog(frame, "Error Getting Data.", "Error", JOptionPane.ERROR_MESSAGE);
+					e1.printStackTrace();
+				} catch (Exception e2) {
+					JOptionPane.showMessageDialog(frame, "Error Getting Data.", "Error", JOptionPane.ERROR_MESSAGE);
+					e2.printStackTrace();
+				}
+
+			}
+		});
+
+		comboBox.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
 				if (comboBox.getSelectedItem() != null) {
 					String id = (String) comboBox.getSelectedItem();
 					try {
@@ -216,6 +236,7 @@ public class FireAlarmMain {
 						e2.printStackTrace();
 					}
 				}
+
 			}
 		});
 

@@ -24,9 +24,8 @@ import userRMIServer.UserDTO;
 public class EditFireAlarm extends JFrame {
 
 	/**
-	 * This JFrame is used to edit fire alarm details
-	 * The table's selected row information are already set to the
-	 *  required fields that need to be edited
+	 * This JFrame is used to edit fire alarm details The table's selected row
+	 * information are already set to the required fields that need to be edited
 	 */
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
@@ -37,11 +36,11 @@ public class EditFireAlarm extends JFrame {
 	private static int roomNo;
 	private static int floorNo;
 	private static String id;
-	
+
 	/**
 	 * Launch the application.
 	 */
-	public static void executeMain(FireAlarmSensor fireIn,UserDTO userIn,String idIn,int roomNoIn,int floorNoIn) {
+	public static void executeMain(FireAlarmSensor fireIn, UserDTO userIn, String idIn, int roomNoIn, int floorNoIn) {
 		user = userIn;
 		fire = fireIn;
 		roomNo = roomNoIn;
@@ -73,7 +72,7 @@ public class EditFireAlarm extends JFrame {
 		setTitle("Edit Fire Alarm");
 		setAlwaysOnTop(true);
 		setResizable(false);
-		
+
 		float titileColorHSB[] = Color.RGBtoHSB(255, 69, 0, null);
 		JLabel lblEditFireAlarm = new JLabel("Edit Fire Alarm");
 		lblEditFireAlarm.setForeground(Color.getHSBColor(titileColorHSB[0], titileColorHSB[1], titileColorHSB[2]));
@@ -111,30 +110,31 @@ public class EditFireAlarm extends JFrame {
 		lblError.setFont(new Font("Tahoma", Font.BOLD, 11));
 		lblError.setBounds(10, 121, 248, 14);
 		contentPane.add(lblError);
-		
-		//Editing fire alarm details if the required field data are valid
-		//or else show an error
+
+		// Editing fire alarm details if the required field data are valid
+		// or else show an error
 		JButton btnEditFireAlarm = new JButton("Edit Fire Alarm");
 		btnEditFireAlarm.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if(!txtRoomNo.getText().equals("")) {
-					if(!txtFloorNo.getText().equals("")) {
+				if (!txtRoomNo.getText().equals("")) {
+					if (!txtFloorNo.getText().equals("")) {
 						try {
 							int room = Integer.parseInt(txtRoomNo.getText());
 							int floor = Integer.parseInt(txtFloorNo.getText());
-							if(user.getToken()!=null) {
+							if (user.getToken() != null) {
 								try {
-									FireAlarmDTO fireaddedDTO = fire.editFireAlarmDetails(id, user.getToken(), room, floor);
-									if(fireaddedDTO.isSuccess()) {
+									FireAlarmDTO fireaddedDTO = fire.editFireAlarmDetails(id, user.getToken(), room,
+											floor);
+									if (fireaddedDTO.isSuccess()) {
 										lblError.setText("Fire Alarm Edited SUccessfully");
 										txtFloorNo.setText("");
 										txtRoomNo.setText("");
 										dispose();
 										FireAlarmClientMain.setTime(0);
-									}else {
-										if(fireaddedDTO.getMsg()!=null) {
-											lblError.setText("Error - "+fireaddedDTO.getMsg());
-										}else {
+									} else {
+										if (fireaddedDTO.getMsg() != null) {
+											lblError.setText("Error - " + fireaddedDTO.getMsg());
+										} else {
 											lblError.setText("Error Editing Fire Alarm");
 										}
 									}
@@ -144,17 +144,20 @@ public class EditFireAlarm extends JFrame {
 								} catch (IOException e1) {
 									lblError.setText("Error Editing Fire Alarm");
 									e1.printStackTrace();
+								} catch (Exception e1) {
+									lblError.setText("Error Editing Fire Alarm");
+									e1.printStackTrace();
 								}
-							}else {
+							} else {
 								lblError.setText("Admin Access Required");
 							}
-						}catch ( NumberFormatException ex){
+						} catch (NumberFormatException ex) {
 							lblError.setText("Room No and Floor No must be Numbers");
 						}
-					}else {
+					} else {
 						lblError.setText("Floor No is invalid");
 					}
-				}else {
+				} else {
 					lblError.setText("Room No is invalid");
 				}
 			}

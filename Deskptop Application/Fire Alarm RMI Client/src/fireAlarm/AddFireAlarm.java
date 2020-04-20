@@ -136,6 +136,9 @@ public class AddFireAlarm extends JFrame {
 								} catch (IOException e1) {
 									lblError.setText("Error Adding Fire Alarm");
 									e1.printStackTrace();
+								} catch (Exception e1) {
+									lblError.setText("Error Adding Fire Alarm");
+									e1.printStackTrace();
 								}
 							}else {
 								lblError.setText("Admin Access Required");

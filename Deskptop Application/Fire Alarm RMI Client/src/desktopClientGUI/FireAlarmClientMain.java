@@ -204,6 +204,7 @@ public class FireAlarmClientMain extends UnicastRemoteObject implements FireAlar
 		tdm = new DefaultTableModel(headders, 0);
 		table_1 = new JTable(tdm);
 		table_1.setForeground(Color.BLACK);
+		table_1.setDefaultRenderer(Object.class, new TableRender());
 
 		table_1.setDefaultEditor(Object.class, null);
 		table_1.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -275,6 +276,9 @@ public class FireAlarmClientMain extends UnicastRemoteObject implements FireAlar
 						JOptionPane.showMessageDialog(frame, "Error Delete", "Error", JOptionPane.ERROR_MESSAGE);
 						e1.printStackTrace();
 					} catch (IOException e1) {
+						JOptionPane.showMessageDialog(frame, "Error Delete", "Error", JOptionPane.ERROR_MESSAGE);
+						e1.printStackTrace();
+					}catch (Exception e1) {
 						JOptionPane.showMessageDialog(frame, "Error Delete", "Error", JOptionPane.ERROR_MESSAGE);
 						e1.printStackTrace();
 					}
@@ -355,11 +359,17 @@ public class FireAlarmClientMain extends UnicastRemoteObject implements FireAlar
 								JOptionPane.showMessageDialog(frame, "Error Getting Data.", "Error",
 										JOptionPane.ERROR_MESSAGE);
 								e1.printStackTrace();
-							} finally {
+							} catch (Exception e1) {
+								JOptionPane.showMessageDialog(frame, "Error Getting Data.", "Error",
+										JOptionPane.ERROR_MESSAGE);
+								e1.printStackTrace();
+							}finally {
 								timetoRefresh = 30;
 							}
 						}
 					} catch (InterruptedException e) {
+						e.printStackTrace();
+					} catch (Exception e) {
 						e.printStackTrace();
 					}
 				}
@@ -393,4 +403,7 @@ public class FireAlarmClientMain extends UnicastRemoteObject implements FireAlar
 		setTime(0);
 
 	}
+	
+	
+	
 }

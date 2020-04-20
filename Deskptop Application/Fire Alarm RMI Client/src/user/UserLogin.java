@@ -12,6 +12,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
@@ -88,7 +89,7 @@ public class UserLogin extends JFrame {
 		contentPane.add(txtUsername);
 		txtUsername.setColumns(10);
 
-		txtPassword = new JTextField();
+		txtPassword = new JPasswordField();
 		txtPassword.setBounds(116, 90, 142, 20);
 		contentPane.add(txtPassword);
 		txtPassword.setColumns(10);
@@ -129,7 +130,10 @@ public class UserLogin extends JFrame {
 						} catch (IOException e1) {
 							lblError.setText("Error Login");
 							e1.printStackTrace();
-						}
+						} catch (Exception e1) {
+							lblError.setText("Error Login");
+							e1.printStackTrace();
+						} 
 
 					} else {
 						lblError.setText("Password is invalid");
