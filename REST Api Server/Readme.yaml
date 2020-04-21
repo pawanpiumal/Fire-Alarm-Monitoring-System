@@ -1,0 +1,504 @@
+swagger: "2.0"
+info:
+  description: "This RESTful web services API is made to handle Fire Alarm Sensors in a building. The Fire Alarm Sensor locations are definded as Room Number and Floor Number. The administrators can register and login to the system. After login in the administrator can add/ edit/ delete fire alarm sensors. When a fire alarm sensor is added any user of the system can get the current status, smoke level, co2 level and the last updated time details of the fire alarm sensor."
+  version: "1.0.0"
+  title: "Fire Alarm Sensor System"
+tags:
+- name: "Fire Alarms"
+  description: "Manipulating Fire Alarm Sensors"
+- name: "User"
+  description: "Registering and Login Users"
+paths:
+  /api/firealarm/addFireAlarm:
+    post:
+      tags:
+      - "Fire Alarms"
+      summary: "Add Fire Alarm"
+      description: "Add a Fire Alarm by providing the room number and the floor number"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in : header
+        type : string
+        name : Authorization
+        description: Authorization token given in User Login/Registration
+        required: true
+      - in: "body"
+        name: "body"
+        description: "Fire Alarm that need to be added"
+        required: true
+        schema:
+          $ref: "#/definitions/AddFireAlarm"
+      responses:
+        400:
+          description: "Bad Request"
+          schema :
+            $ref : '#/definitions/AddFireAlarmFailureResponse'
+        201:
+          description: "Object Created"
+          schema:
+            $ref: '#/definitions/AddFireAlarmSuccessResponse'
+  /api/firealarm/update/{Id}:
+    patch:
+      tags:
+      - "Fire Alarms"
+      summary: "Update Fire Alarm Sensor Location"
+      description: "Change the Room Number or the Floor Number of a Fire Alarm Sensor"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in : header
+        type : string
+        name : Authorization
+        description: Authorization token given in User Login/Registration
+        required: true
+      - in : path
+        type: string
+        name: Id
+        description: Fire Alarm Sensor ID provided by MongoDB
+        required: true
+      - in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/UpdateFireAlarm'
+      responses:
+        404:
+          description: "Not Found"
+          schema :
+            $ref : '#/definitions/UpdateFireAlarmFailureResponse'
+        400:
+          description: "Bad Request"
+          schema :
+            $ref : '#/definitions/UpdateFireAlarmFailureResponse'
+        200:
+          description: "OK"
+          schema:
+            $ref: '#/definitions/UpdateFireAlarmSuccessResponse'
+  /api/firealarm/delete/{Id}:
+    delete:
+      tags:
+      - "Fire Alarms"
+      summary: "Delete Fire Alarm Sensor"
+      description: "Delete a Fire Alarm Sensor from the system"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in : header
+        type : string
+        name : Authorization
+        description: Authorization token given in User Login/Registration
+        required: true
+      - in : path
+        type: string
+        name: Id
+        description: Fire Alarm Sensor ID provided by MongoDB
+        required: true
+      responses:
+        400:
+          description: "Bad Request"
+          schema :
+            $ref : '#/definitions/DeleteFireAlarmFailureResponse'
+        200:
+          description: "OK"
+          schema:
+            $ref: '#/definitions/DeleteFireAlarmSuccessResponse'
+            
+            
+  /api/firealarm/{Id}:
+    patch:
+      tags:
+      - "Fire Alarms"
+      summary: "Update Fire Alarm Sensor Details"
+      description: "Change the Status or Smoke Level and CO2 Level of a Fire Alarm Sensor."
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in : header
+        type : string
+        name : Authorization
+        description: Authorization token given in User Login/Registration
+        required: true
+      - in : path
+        type: string
+        name: Id
+        description: Fire Alarm Sensor ID provided by MongoDB
+        required: true
+      - in: body
+        name: body
+        required: true
+        description: If status is present Other 2 parameters will be ignored. For Update the Other 2 paprameters remove status from the body.
+        schema:
+          $ref: '#/definitions/UpdateFireAlarmSensorDetailsStatus'
+      responses:
+        404:
+          description: "Not Found"
+          schema :
+            $ref : '#/definitions/UpdateFireAlarmSensorFailureDetails'
+        400:
+          description: "Bad Request"
+          schema :
+            $ref : '#/definitions/UpdateFireAlarmSensorFailureDetails'
+        200:
+          description: "OK"
+          schema:
+            $ref: '#/definitions/UpdateFireAlarmSensorSuccessDetails'
+  /api/firealarm/:
+    get:
+      tags:
+      - Fire Alarms
+      summary: "Get all the Fire Alarm Sensor Details"
+      description: "Get All the Details of Every Fire Alarm Sensor present in the system. This method returns id, status, room number, floor number, CO2 level, Smoke level and last updated time per a fire alarm sensor."
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      responses:
+        400:
+          description: "Bad Request"
+          schema :
+            $ref : '#/definitions/GetFireAlarmDetailsFailure'
+        200:
+          description: "OK"
+          schema:
+            $ref: '#/definitions/GetFireAlarmDetailsSuccess'
+  /api/users/signup:
+    post:
+      tags:
+      - User
+      summary: "Register a User" 
+      description: "Register a user by providing the required data."
+      parameters:
+        - in : body
+          name : body
+          required: true
+          schema:
+            $ref: '#/definitions/RegisterUser'
+      responses:
+        201:
+          description: Object Created
+          schema:
+            $ref: '#/definitions/RegisterUserSuccess'
+        400:
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/RegisterUserFailure'
+  /api/users/login:
+    post:
+      tags:
+      - User
+      summary: "User Login" 
+      description: "User login by providing the User name and the Password"
+      parameters:
+        - in : body
+          name : body
+          required: true
+          schema:
+            $ref: '#/definitions/UserLogin'
+      responses:
+        201:
+          description: Object Created
+          schema:
+            $ref: '#/definitions/UserLoginSuccess'
+        400:
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/UserLoginFailure'
+    
+  
+    
+definitions:
+  FireAlarm:
+    type: object
+    properties:
+      _id:
+        type: string
+      status: 
+        type: string
+      floorNo: 
+        type: integer
+      roomNo: 
+        type: integer
+      smokeLevel:
+        type: integer
+        maximum: 10
+        minimum: 0
+      co2Level:
+        type: integer
+        maximum: 10
+        minimum: 0
+      lastUpdated:
+        type: string
+        format: date-time
+ 
+  AddFireAlarm:
+    type: "object"
+    properties:
+      roomNo:
+        type: "integer"
+      floorNo:
+        type: "integer"
+  AddFireAlarmSuccessResponse:
+    type: "object"
+    properties:
+      success:
+        type: "boolean"
+        default: "true"
+        description: "true"
+      msg:
+        type: "string"
+      savedData:
+        $ref: "#/definitions/FireAlarm"
+  AddFireAlarmFailureResponse:
+    type: object
+    properties:
+      success:
+        type: boolean
+        description: "false"
+        default: "false"
+      msg:
+        type: "string"
+        description: optional
+      err:
+        type: object
+        description: optional
+      roomNo:
+        type: string
+        description: optional
+      floorNo:
+        type: string
+        description: optional
+  UpdateFireAlarm:
+    type: object
+    properties:
+      roomNo:
+        type: integer
+      floorNo:
+        type: integer
+  UpdateFireAlarmSuccessResponse:
+    type: object
+    properties:
+      success:
+        type: boolean
+        default: "true"
+        description: "true"
+      msg :
+        type: string
+  UpdateFireAlarmFailureResponse:
+    type: object
+    properties:
+      success:
+        type: boolean
+        default: "false"
+        description: "false"
+      msg:
+        type: string
+      err:
+        type: object
+        description: optional
+      roomNo:
+        type: string
+        description: optional
+      floorNo:
+        type: string
+        description: optional
+  DeleteFireAlarmSuccessResponse:
+    type: object
+    properties:
+      success:
+        type: boolean
+        default: "true"
+        description: "true"
+      msg:
+        type: string
+      deletedData:
+        $ref: '#/definitions/FireAlarm'
+        description: "Optional"
+  DeleteFireAlarmFailureResponse:
+    type: object
+    properties:
+      success:
+        type: boolean
+        default: "false"
+        description: "false"
+      err:
+        type: object
+  UpdateFireAlarmSensorDetailsStatus:
+    type: object
+    properties:
+      status:
+        type: string
+      smokeLevel:
+        type: integer
+        maximum: 10
+        minimum: 0
+      co2Level:
+        type: integer
+        maximum: 10
+        minimum: 0
+      
+  UpdateFireAlarmSensorSuccessDetails:
+    type: object
+    properties:
+      success:
+        type: boolean
+        default: "true"
+        description: "true"
+      msg:
+        type: string
+        
+  UpdateFireAlarmSensorFailureDetails:
+    type: object
+    properties:
+      success:
+        type: boolean
+        default: "false"
+        description: "false"
+      msg:
+        type: string
+        description: optional
+      err:
+        type: object
+        description: optional
+      smokeLevel:
+        type: string
+        description: optional
+      co2Level:
+        type: string
+        description: optional
+      satus:
+        type: string
+        description: optional 
+        
+  GetFireAlarmDetailsSuccess:
+    type: object
+    properties:
+      success:
+        type: boolean
+        default: "true"
+        description: "true"
+      data :
+        type: array
+        items:
+          $ref: '#/definitions/FireAlarm'
+  GetFireAlarmDetailsFailure:
+    type: object
+    properties:
+      success:
+        type: boolean
+        default: "false"
+        description: "false"
+      err :
+        type: object
+  User:
+    type: object
+    properties:
+      _id:
+        type: string
+      email:
+        type: string
+      userName:
+        type: string
+      mobileNumber:
+        type: integer
+      password:
+        type: string
+        
+  RegisterUser:
+    type: object
+    properties:
+      email:
+        type: string
+      userName:
+        type: string
+      mobileNumber:
+        type: integer
+      password:
+        type: string
+  RegisterUserSuccess:
+    type: object
+    properties:
+      success:
+        type: boolean
+        default: true
+        description: "true"
+      token:
+        type: string
+      msg:
+        type: string
+      
+        
+  RegisterUserFailure:
+    type: object
+    properties:
+      success:
+        type: boolean
+        default: false
+        description: "false"
+      err:
+        type: object
+        description: "Optional"
+      msg:
+        type: string
+        description: "Optional"
+      email:
+        type: string
+        description: "Optional"
+      userName:
+        type: string
+        description: "Optional"
+      mobileNumber:
+        type: integer
+        description: "Optional"
+      password:
+        type: string
+        description: "Optional"
+        
+  UserLogin:
+    type: object
+    properties:
+      userName:
+        type: string
+      password:
+        type: string
+        
+  UserLoginSuccess:
+    type: object
+    properties:
+      success:
+        type: boolean
+        default: true
+        description: "true"
+      token:
+        type: string
+      msg:
+        type: string
+        
+  UserLoginFailure:
+    type: object
+    properties:
+      success:
+        type: boolean
+        default: false
+        description: "false"
+      err:
+        type: object
+        description: "Optional"
+      msg:
+        type: string
+        description: "Optional"
+      userName:
+        type: string
+        description: "Optional"
+      password:
+        type: string
+        description: "Optional"
+        
