@@ -48,7 +48,7 @@ router.post('/signup', (req, res) => {
     } else {
         return res.status(400).send({
             success: false,
-            msg:"userName, password,email,mobileNumber must be provided.",
+            msg: "userName, password,email,mobileNumber must be provided.",
             "userName": data.userName ? "Valid" : "Not Provided",
             "password": data.password ? "Valid" : "Not Provided",
             "email": data.email ? "Valid" : "Not Provided",
@@ -68,29 +68,25 @@ router.post('/signup', (req, res) => {
 router.post('/login', (req, res) => {
     const data = req.body;
     if (data.userName && data.password) {
-        let userData = {
-            userName: data.userName,
-            password: data.password
-        }
-        User.findOne(userData, (err, dataFromDB) => {
+        User.findOne({$or:[{userName:data.userName},{email:data.userName}],password:data.password}, (err, dataFromDB) => {
             if (err) {
-                res.status(404).send({ success:false, err: err });
+                res.status(404).send({ success: false, err: err });
             } else {
                 if (dataFromDB) {
                     let token = jwt.sign({ dataFromDB }, secret, {
                         expiresIn: '4h'
                     });
-                    res.status(200).send({  success:true,msg: `User Name ${dataFromDB.userName} Logged in Successfully.`, token });
+                    res.status(200).send({ success: true, msg: `User Name ${dataFromDB.userName} Logged in Successfully.`, token });
                 } else {
-                    res.status(404).send({  success:false,msg: "Not Found" });
+                    res.status(404).send({ success: false, msg: "Not Found" });
                 }
             }
         });
 
     } else {
         res.status(400).send({
-            success:false,
-            msg:"userName, password must be provided.",
+            success: false,
+            msg: "userName, password must be provided.",
             "userName": data.userName ? "Provided" : "Not Provided",
             "password": data.password ? "Provided" : "Not Provided"
         })
