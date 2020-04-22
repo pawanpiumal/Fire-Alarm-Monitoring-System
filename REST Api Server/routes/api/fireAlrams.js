@@ -147,7 +147,7 @@ router.patch('/:id', async (req, res) => {
     }
     if (fireAlarmPrevious) {
         if (data.status) {
-            fireAlarm.findByIdAndUpdate(fireAlarmID, { status: data.status }, (err) => {
+            fireAlarm.findByIdAndUpdate(fireAlarmID, { status: data.status ,$inc:{__v:+1}}, (err) => {
                 if (err) {
                     return res.status(400).send({ success: false, err: err });
                 } else {
@@ -159,14 +159,19 @@ router.patch('/:id', async (req, res) => {
                 let fireAlarmNew = {
                     "co2Level": data.co2Level,
                     "smokeLevel": data.smokeLevel,
-                    "lastUpdated": new Date()
+                    "lastUpdated": new Date(),
+                    $inc : {__v:+1}
                 }
                 if (data.co2Level > 5 || data.smokeLevel > 5) {
                     //sending the Email and the SMS only one time
                     //The email & sms is sent again only if the co2 level and smoke level
                     //droped under 5 and get increased again
                     if (fireAlarmPrevious.co2Level <= 5 && fireAlarmPrevious.smokeLevel <= 5) {
+                        //Assign the previous data to the new data
+                        //This is done because the new data should have the id, room no, floor no in order to send the
+                        //SMS and the email
                         fireAlarmNew = fireAlarmPrevious;
+                        //replace the co2 level and the smoke level with the new data
                         fireAlarmNew.co2Level = data.co2Level;
                         fireAlarmNew.smokeLevel = data.smokeLevel;
                         
