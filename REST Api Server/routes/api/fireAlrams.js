@@ -5,6 +5,9 @@ const router = express.Router();
 //Importing Fire Alarm Mongoose model
 const fireAlarm = require('../../models/FireAlarm');
 
+//importing User mongose modal
+const user = require('../../models/User');
+
 //Importing middleware to authorize admin login
 const userAuthorization = require('../../middleware/FireAlarmsMiddleware').verifyUser;
 
@@ -44,7 +47,7 @@ router.post('/addFireAlarm', userAuthorization, (req, res) => {
         //sending a 400 (Bad Request) error when input data is not correct
         res.status(400).send({
             success: false,
-            msg:"roomNo or floorNo or both are not provided",
+            msg: "roomNo or floorNo or both are not provided",
             roomNo: data.roomNo ? "Valid" : "Empty",
             floorNo: data.floorNo ? "Valid" : "Empty"
         });
@@ -97,7 +100,7 @@ router.patch('/update/:id', userAuthorization, async (req, res) => {
         //returing 400 (Bad Request ) error if the input fields are not valid
         res.status(400).send({
             success: false,
-            msg:"roomNo and floorNo are not provided. Provide one of the field or both.",
+            msg: "roomNo and floorNo are not provided. Provide one of the field or both.",
             roomNo: "Empty",
             floorNo: "Empty"
         });
@@ -156,7 +159,7 @@ router.patch('/:id', async (req, res) => {
                 let fireAlarmNew = {
                     "co2Level": data.co2Level,
                     "smokeLevel": data.smokeLevel,
-                    "lastUpdated":new Date()
+                    "lastUpdated": new Date()
                 }
                 if (data.co2Level > 5 || data.smokeLevel > 5) {
                     //sending the Email and the SMS only one time
@@ -166,8 +169,39 @@ router.patch('/:id', async (req, res) => {
                         fireAlarmNew = fireAlarmPrevious;
                         fireAlarmNew.co2Level = data.co2Level;
                         fireAlarmNew.smokeLevel = data.smokeLevel;
-                        sendEmailNotification(res, fireAlarmNew);
-                        sendSMSNotification(res, fireAlarmNew);
+                        
+                        let userEmailAndMobile = await user.find({}, { _id: 0, "email": 1, "mobileNumber": 1  }).catch((err) => res.status(500).send({ success: false, err: err }));
+                        let userEmailsArray = userEmailAndMobile.map((value) => {
+                            return value.email;
+                        });
+                        userEmailsArray = userEmailsArray.filter((value, index, self) => {
+                            return self.indexOf(value) === index;
+                        });
+
+                        let EmailMessageHTML=`<h1 style="color: red;font-weight: bold;text-align:center">Fire Alarm Warning</h1>
+                        <h4>Fire Alarm ID ${fireAlarmNew._id} in Floor ${fireAlarmNew.floorNo}, Room ${fireAlarmNew.roomNo}  has exceeded the CO2 or Smoke limit.</h4>
+                        <p>CO2 Level : ${fireAlarmNew.co2Level}</p>
+                        <p>Smoke Level : ${fireAlarmNew.smokeLevel}</p>`;
+                        let EmailSubject = "Fire Alarm System";
+                        sendEmailNotification([],[],userEmailsArray,EmailSubject,EmailMessageHTML);
+
+
+                        let userMobileNumbersArray = userEmailAndMobile.map((value) => {
+                            return ('94' + value.mobileNumber);
+                        });
+                        userMobileNumbersArray = userMobileNumbersArray.filter((value, index, self) => {
+                            return self.indexOf(value) === index;
+                        });
+                        const from = 'Fire Alarm Warning';
+                    
+                        const text = `Fire Alarm Warning
+                        Fire Alarm ID ${fireAlarmNew._id} in Floor ${fireAlarmNew.floorNo}, Room ${fireAlarmNew.roomNo}  has exceeded the CO2 or Smoke limit.
+                          `;
+                          
+                        //This method is if the SMS is sent via Nexmo
+                        // sendSMSNotification(userMobileNumbersArray,from,text);
+                        //This method is if the SMS is sent via TextIt
+                        sendSMSNotification(userMobileNumbersArray,text);
                     }
                 }
                 fireAlarm.findByIdAndUpdate(fireAlarmID, fireAlarmNew, (err) => {
@@ -180,7 +214,7 @@ router.patch('/:id', async (req, res) => {
             } else {
                 res.status(400).send({
                     success: false,
-                    msg:"co2level and smokeLevel must be between 0 and 10",
+                    msg: "co2level and smokeLevel must be between 0 and 10",
                     co2Level: data.co2Level >= 0 && data.co2Level <= 10 ? "Valid" : "CO2 Level must be between 0 and 10",
                     smokeLevel: data.smokeLevel >= 0 && data.smokeLevel <= 10 ? "Valid" : "Smoke Level must be between 0 and 10",
                 });
@@ -188,7 +222,7 @@ router.patch('/:id', async (req, res) => {
         } else {
             res.status(400).send({
                 success: false,
-                msg:"co2level and smokeLevel or status mist be provided",
+                msg: "co2level and smokeLevel or status must be provided",
                 co2Level: data.co2Level ? "Valid" : "Empty",
                 smokeLevel: data.smokeLevel ? "Valid" : "Empty",
                 status: data.status ? "Valid" : "Empty",

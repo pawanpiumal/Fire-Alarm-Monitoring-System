@@ -1,9 +1,6 @@
 //Importing Nexmo to send sms
 const Nexmo = require('nexmo');
 
-//importing User mongose modal
-const user = require('../models/User');
-
 //Importing Api Key and Secret key from config
 const apiKey = require('../config/config').nexmoApiKey;
 const apiSecret = require('../config/config').nexmoApiSecret;
@@ -18,20 +15,7 @@ const nexmo = new Nexmo({
     apiSecret
 });
 
-module.exports = async (res, fireAlarmData) => {
-    let userMobileNumbers = await user.find({}, { _id: 0, "mobileNumber": 1 }).catch((err) => res.status(500).send({success:false, err: err }));
-    let userMobileNumbersArray = userMobileNumbers.map((value) => {
-        return ('94' + value.mobileNumber);
-    });
-    userMobileNumbersArray = userMobileNumbersArray.filter((value, index, self) => {
-        return self.indexOf(value) === index;
-    });
-    const from = 'Fire Alarm Warning';
-
-    const text = `Fire Alarm Warning
-    Fire Alarm ID ${fireAlarmData._id} in Floor ${fireAlarmData.floorNo}, Room ${fireAlarmData.roomNo}  has exceeded the CO2 or Smoke limit.
-      `;
-
+module.exports = async (userMobileNumbersArray,from,text) => {
     userMobileNumbersArray.map((value) => {
         nexmo.message.sendSms(from, value, text, (err, responseData) => {
             if (err) {
