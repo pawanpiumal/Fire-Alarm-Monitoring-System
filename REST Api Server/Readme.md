@@ -1,4 +1,4 @@
-﻿
+
 # Fire Alarm Sensor System
 This RESTful web services API is made to handle Fire Alarm Sensors in a building. The Fire Alarm Sensor locations are definded as Room Number and Floor Number. The administrators can register and login to the system. After login in the administrator can add/ edit/ delete fire alarm sensors. When a fire alarm sensor is added any user of the system can get the current status, smoke level, co2 level and the last updated time details of the fire alarm sensor.
 
