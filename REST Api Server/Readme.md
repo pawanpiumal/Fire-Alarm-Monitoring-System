@@ -2,7 +2,35 @@
 # Fire Alarm Sensor System
 This RESTful web services API is made to handle Fire Alarm Sensors in a building. The Fire Alarm Sensor locations are definded as Room Number and Floor Number. The administrators can register and login to the system. After login in the administrator can add/ edit/ delete fire alarm sensors. When a fire alarm sensor is added any user of the system can get the current status, smoke level, co2 level and the last updated time details of the fire alarm sensor.
 
-## Version: 1.0.0
+## How to Install
+
+First check if Node and Node Package Manager is installed using the follwing commands in the command prompt.
+```
+node --version
+npm --version
+```
+If both of them are installed clone this directory and run the following command in the command prompt.
+```
+npm install
+```
+Then to run the server simple run the following command.
+```
+npm start
+```
+## How to test the System
+
+You can use [Postman](https://www.postman.com/) or cURL to check the REST services. The interces and the required data to make an HTTP request is shown below. The URI is as this,
+
+http://localhost: "PORT" / "REST web service URI"
+
+Ex:-
+
+```
+http://localhost:5000/api/users/login
+http://localhost:5000/api/firealarm/5e936dc8086cf25704c1306c
+```
+
+## REST web service URIs 
 
 ### /api/firealarm/addFireAlarm
 
