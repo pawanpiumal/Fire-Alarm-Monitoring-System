@@ -175,7 +175,10 @@ router.patch('/:id', async (req, res) => {
                         fireAlarmNew.co2Level = data.co2Level;
                         fireAlarmNew.smokeLevel = data.smokeLevel;
                         
-                        let userEmailAndMobile = await user.find({}, { _id: 0, "email": 1, "mobileNumber": 1  }).catch((err) => res.status(500).send({ success: false, err: err }));
+                        let userEmailAndMobile = await user.find({}, { _id: 0, "email": 1, "mobileNumber": 1  }).catch((err) =>{error=true; res.status(500).send({ success: false, err: err })});
+                        if(error){
+                            return;
+                        }
                         let userEmailsArray = userEmailAndMobile.map((value) => {
                             return value.email;
                         });
@@ -247,6 +250,26 @@ router.get("/", (req, res) => {
             return res.status(400).send({ success: false, err: err });
         } else {
             res.status(200).send({ success: true, data });
+        }
+    });
+
+});
+
+//Get a particular Fire Alarm sensor Details
+//HTTP GET Request
+//No Authorization needed
+router.get("/:id", (req, res) => {
+    let id = req.params.id;
+    fireAlarm.findById(id,(err, data) => {
+        if (err) {
+            return res.status(400).send({ success: false, err: err });
+        } else {
+            if(data){
+                res.status(200).send({ success: true, data });
+            }else{
+                res.status(404).send({success:false,msg:"Not Found"});
+            }
+            
         }
     });
 

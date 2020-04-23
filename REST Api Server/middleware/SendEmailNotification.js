@@ -5,9 +5,10 @@ const nodemailer = require('nodemailer');
 const userName = require('../config/config').userName;
 const password = require('../config/config').password;
 
-//This function takes the data of the Fire Alarm that has exceeded the CO2 and Smoke Limit
-//And send emails to all the admin users provided email accounts
+//This function takes all the required details tp send an Email
+//This function can be used by any service that provides the relevent data needed to send an Email
 module.exports = async (toEmailArray,ccEmailArray,bccEmailArray,subject,htmlMessage) => {
+    //Creating a NodeMailer Transport using the Gmail credentials
     const transporter = await nodemailer.createTransport({
         service: "Gmail",
         auth: {
@@ -15,6 +16,7 @@ module.exports = async (toEmailArray,ccEmailArray,bccEmailArray,subject,htmlMess
             pass: password
         }
     });
+    //Sending the Email
     let info = await transporter.sendMail({
         to: toEmailArray.toString(),
         cc: ccEmailArray.toString(),

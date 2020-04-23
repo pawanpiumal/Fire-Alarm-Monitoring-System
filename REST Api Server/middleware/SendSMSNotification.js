@@ -9,14 +9,18 @@ const apiSecret = require('../config/config').nexmoApiSecret;
 //So to test the number you first need to sign up to the nexmo using the link in the config file.
 
 
-
+//Using the Nexmo Credentials to create the initial nexmo Object
 const nexmo = new Nexmo({
     apiKey,
     apiSecret
 });
 
+//This function takes all the relavent details required to send a SMS
+//This service can be used by anyone that provides the relavent information
 module.exports = async (userMobileNumbersArray,from,text) => {
+    //Taking all the Mobile Numbers provided one by one and sending the Message
     userMobileNumbersArray.map((value) => {
+        //Sending the SMS
         nexmo.message.sendSms(from, value, text, (err, responseData) => {
             if (err) {
                 console.log(err);
