@@ -269,9 +269,11 @@ public class FireAlarmMain {
 		});
 	}
 
-	private int time = 30;
+	private int resetTime = 10;
 
-	// Sending the sensor details in 30 second intervals
+	private int time = resetTime;
+
+	// Sending the sensor details in specified time intervals
 
 	public void updateDataInIntervals() {
 		Thread t = new Thread(new Runnable() {
@@ -305,7 +307,7 @@ public class FireAlarmMain {
 												JOptionPane.ERROR_MESSAGE);
 										e2.printStackTrace();
 									} finally {
-										time = 30;
+										time = resetTime;
 									}
 
 								}

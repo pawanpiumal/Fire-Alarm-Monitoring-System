@@ -37,7 +37,7 @@ public class RMIServerMain {
 
 			System.out.println("RMI Server Running");
 			//Used to check the fire alarm sensor details in intervals
-			int time = 5000;
+			int time = 15000;
 			checkFireAlarms(time);
 			System.out.println("Checking for Fire Alarm CO2, Smoke Level Exceeds in Every " + time + "ms");
 		} catch (Exception e) {
