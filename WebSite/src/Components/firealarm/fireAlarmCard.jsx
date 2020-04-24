@@ -5,7 +5,7 @@ import './fireAlarm.css';
 
 
 class fireAlarmCard extends Component {
-    
+
     //getting the card classnames according to the co2 and smoke levels
     getClass = () => {
         if (this.props.data.status === 'Not Active') {
@@ -31,8 +31,6 @@ class fireAlarmCard extends Component {
     render() {
         let lastUpdated = new Date(this.props.data.lastUpdated);
         lastUpdated = lastUpdated.toLocaleString();
-        // lastUpdated = lastUpdated.getFullYear() + "-" + lastUpdated.getMonth() + "-" + lastUpdated.getDate() + " "
-        //     + lastUpdated.getHours() + ":" + lastUpdated.getMinutes() + ":" + lastUpdated.getSeconds();
         return (
             <div className="col-sm-4 py-2 ">
                 <div className={this.getClass()}>
@@ -45,28 +43,6 @@ class fireAlarmCard extends Component {
                             <p>Smoke Level  : {this.props.data.smokeLevel}</p>
                             <p>Last Updated : {lastUpdated}</p>
                         </div>
-                        {/* The Commented part is to add SIgnup and Login functions to the WebSite*/}
-                        {/* {
-
-                            false ?
-
-                                <div className="btn-group taskRowButton" role="group">
-                                    <button className="btn btn-dark" type="button">
-                                        123
-                            </button>
-                                    <button className="btn btn-success" type="button"
-                                    >
-                                        <i className="fa fa-check"></i>
-                                    </button>
-                                    <button className="btn btn-danger rounded text-justify" type="button" >
-                                        <i className="fa fa-trash-o"></i>
-                                    </button>
-                                </div>
-                                :
-                                ""
-
-
-                        } */}
                     </div>
                 </div>
             </div>

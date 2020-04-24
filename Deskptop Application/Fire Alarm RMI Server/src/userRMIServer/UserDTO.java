@@ -11,9 +11,6 @@ import com.google.gson.annotations.SerializedName;
 //REST API
 public class UserDTO implements Serializable{
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -1464002385204833616L;
 	@SerializedName("success")
 	@Expose
