@@ -9,7 +9,10 @@ npm --version
 ```
 3. If not Installed Install them.
 4. Install a Java IDE
-5. Install MongoDB
+5. Install MongoDB. To check MongoDB is installed run the following command in the Command Prompt
+```
+mongo --version
+```
 6. Run the following Commands in the Command Prompt. The path is the main directory of the downloaded file directory.
 ```
 cd REST Api Server
