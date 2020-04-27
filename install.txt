@@ -1,0 +1,29 @@
+1. Download the Project
+2. Install Java IDE(Eclipse),MongoDB, Node and Node Package Manager(NPM)
+3. Run the MongoDB service
+4. Run npm install in Website Directory and REST Api Server Directory
+5. Check Whether the Port Numbers 3000,3001,5000 are busy
+	If PORT 5000 is busy,
+		Stop the other process running at PORT 5000
+			Beacuse it is easier to stop the other process than changing the code
+		If stopping other process is hard, Do what is stated in the Readme.md in GitHub directory or the Config/Config.js file in REST Api Server Directory
+	If PORT 3000 is busy,
+		Chnage the port numbers in following files
+			Fire Alarm RMI Server / src / fireAlarmRMIServerMain / RMIServerMain.java
+			Fire Alarm RMI Client / src / desktopClientGUI / FireAlarmClientMain.java
+	If PORT 3001 is busy,
+		Change the PORT number in the following file,
+			Website/ .env
+6. Add the relavent details to the Config.js file in REST Api Server/Config/ directory. 
+	Add a valid Gmail account username and password
+	Change the Mongo URI if the Mongo port is different
+	Create a TextIt or Nexmo account add the relevant details
+7. Run npm start in REST Api Server Directory
+8. Run npm start in WebSite Directory
+9. Open the Desktop Application Directory using the Java IDE
+10. Run the RMI Server java File
+	Desktop Application / Fire Alarm RMI Server / src / fireAlarmRMIServerMain / RMIServerMain.java
+11. Run the Desktop Client Java File
+	Desktop Application / Fire Alarm RMI Client / src / desktopClientGUI / FireAlarmClientMain.java
+12. Run Multiple instances of the Fire Alarm Sensor Java File to emulate a Fire Alarm Sensor
+	Desktop Application / Fire Alarm Sensor / src / fireAlarmGUI/ FireAlarmMain.java
