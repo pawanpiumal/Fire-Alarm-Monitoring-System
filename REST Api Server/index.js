@@ -27,6 +27,6 @@ mongoose.connect(MongoUri,{useUnifiedTopology:true,useNewUrlParser:true,useFindA
 
 
 //port 
-const PORT =   5000;
+const PORT =   require('./config/config').PORT;
 
 app.listen(PORT, ()=> console.log(`Server started on port ${PORT}`));

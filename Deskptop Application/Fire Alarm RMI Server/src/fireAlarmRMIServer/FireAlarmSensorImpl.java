@@ -283,7 +283,7 @@ public class FireAlarmSensorImpl extends UnicastRemoteObject implements FireAlar
 	// method allowing to use PATCH in HttpURLConnection
 	// Source
 	// https://stackoverflow.com/questions/25163131/httpurlconnection-invalid-http-method-patch
-	private static void allowMethods(String methods) {
+	private static void allowMethods(String... methods) {
 		try {
 			Field methodsField = HttpURLConnection.class.getDeclaredField("methods");
 

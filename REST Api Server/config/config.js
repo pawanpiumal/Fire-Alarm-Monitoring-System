@@ -1,4 +1,16 @@
 module.exports = {
+    //Running of the System
+    //If the port number is changed, there are many places to change the number in other applications
+    //beacuse of that of port 5000 is in use, stop the other app using the port and use the port 5000
+    //to start this app
+    //if any case the port number is changed,
+    //the user must change the HTTP Request URIs in following places
+    //Website/src/Components/firealarm/fireAlarmMain.jsx - In axios.get() - change the 500 to the changed port
+    //Desktop Application/Fire Alarm Sensor/src/fireAlarmSensor/FireAlarmImpl.java - find and replace all port 5000 to changed port
+    //Desktop Application/Fire Alarm RMI Sensor/src/FireAlarmSensorImpl.java - find and replace all port 5000 to changed port
+    //Desktop Application/User RMI Sensor/src/UserImpl.java - find and replace all port 5000 to changed port
+    PORT : 5000,
+
     //mongoDB uri in the current system
     //the default port is 27017
     //if the system is changed, Change this in order to run the database
