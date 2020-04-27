@@ -22,20 +22,20 @@ module.exports = {
     //Gmail Credentials
     //First turn on Allow less secure apps in GMAIL account using the below link
     //https://myaccount.google.com/u/0/lesssecureapps
-    userName: "gppagroup2@gmail.com",
-    password: "ariyathilake",
+    userName: "XXXXXXXX@gmail.com",
+    password: "XXXXXXXX",
 
 
     //Nexmo Credentials
     //Used to send SMS
     //First create an account in nexmo using the below link
     //https://dashboard.nexmo.com/sign-in
-    nexmoApiKey: '26164d18',
-    nexmoApiSecret: '8SnXdkqrR51J3kuS',
+    nexmoApiKey: 'XXXXXXXX',
+    nexmoApiSecret: 'XXXXXXXXXXXXXXX',
 
     //textit credentials
     //signup using the below link
     //http://textit.biz/signup_1.php
-    textitID : '94712917257',
-    textitPassword : '7410'
+    textitID : '94XXXXXXXXX',
+    textitPassword : 'XXXX'
 }
