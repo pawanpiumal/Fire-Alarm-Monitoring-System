@@ -69,5 +69,8 @@ Desktop Application / Fire Alarm RMI Client / src / desktopClientGUI / FireAlarm
 Run the Following Java file using the Java IDE. You can run multiple instances of this app.
 ```
 Desktop Application / Fire Alarm Sensor / src / fireAlarmGUI/ FireAlarmMain.java
-
 ```
+
+### Using the RESTful Web Services API
+If you need to use the RESTful Web Services API only the Yaml file related to the REST API is stored in the REST Api Server directory.
+[Yaml File](https://github.com/pawanpiumal/Fire-Alarm-Monitoring-System/blob/master/REST%20Api%20Server/Readme.yaml)
