@@ -1,7 +1,7 @@
 ﻿
 # Fire Alarm Sensor System
 ## How to Install
-1. Clone or Downlaod the Project files
+1. Clone or Download the Project files
 2. Check whether Node and NPM are installed. To check if they are installed, run the below command in the Command Prompt
 ```
 node -- version
