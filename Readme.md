@@ -1,6 +1,6 @@
 ﻿
 # Fire Alarm Sensor System
-## Watch this video to see the working system. And also the video shows how to Install, Configure and Run the System.
+Watch this video to see the working system. And also the video shows how to Install, Configure and Run the System.
 [Youtube](https://youtu.be/0E9F8ukM_ig)
 
 ## How to Install
