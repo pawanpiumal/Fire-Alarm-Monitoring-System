@@ -48,7 +48,7 @@ Fire Alarm RMI Server / src / fireAlarmRMIServerMain / RMIServerMain.java - Chna
 Fire Alarm RMI Client / src / desktopClientGUI / FireAlarmClientMain.java - Change the PORT number to the same port as above
 ```
 
-### How to Import the Database Files
+### How to Import the Database Files ( Not Necessary)
 1. Go to the Database Files Directory
 2. Open Command Prompt in the Directory
 3. Run the following commands
