@@ -18,12 +18,17 @@
 	Add a valid Gmail account username and password
 	Change the Mongo URI if the Mongo port is different
 	Create a TextIt or Nexmo account add the relevant details
-7. Run npm start in REST Api Server Directory
-8. Run npm start in WebSite Directory
-9. Open the Desktop Application Directory using the Java IDE
-10. Run the RMI Server java File
+7. Import the MongoDB Databse Data ( Not Necessary )
+Run the following commands in the command prompt in the Database Files directory
+	mongoimport --db fireAlarmSystem --collection users --drop --file users.json
+	mongoimport --db fireAlarmSystem --collection firealarms --file firealarms.json
+
+8. Run npm start in REST Api Server Directory
+9. Run npm start in WebSite Directory
+10. Open the Desktop Application Directory using the Java IDE
+11. Run the RMI Server java File
 	Desktop Application / Fire Alarm RMI Server / src / fireAlarmRMIServerMain / RMIServerMain.java
-11. Run the Desktop Client Java File
+12. Run the Desktop Client Java File
 	Desktop Application / Fire Alarm RMI Client / src / desktopClientGUI / FireAlarmClientMain.java
-12. Run Multiple instances of the Fire Alarm Sensor Java File to emulate a Fire Alarm Sensor
+13. Run Multiple instances of the Fire Alarm Sensor Java File to emulate a Fire Alarm Sensor
 	Desktop Application / Fire Alarm Sensor / src / fireAlarmGUI/ FireAlarmMain.java

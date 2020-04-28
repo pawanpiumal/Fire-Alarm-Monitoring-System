@@ -1,5 +1,8 @@
 ﻿
 # Fire Alarm Sensor System
+## Watch this video to see the working system. And also the video shows how to Install, Configure and Run the System.
+[Youtube](https://youtu.be/0E9F8ukM_ig)
+
 ## How to Install
 1. Clone or Download the Project files
 2. Check whether Node and NPM are installed. To check if they are installed, run the below command in the Command Prompt
@@ -44,6 +47,16 @@ If this command returns nothing the port is empty.
 Fire Alarm RMI Server / src / fireAlarmRMIServerMain / RMIServerMain.java - Chnage the PORT number to an empty port
 Fire Alarm RMI Client / src / desktopClientGUI / FireAlarmClientMain.java - Change the PORT number to the same port as above
 ```
+
+### How to Import the Database Files
+1. Go to the Database Files Directory
+2. Open Command Prompt in the Directory
+3. Run the following commands
+```
+mongoimport --db fireAlarmSystem --collection users --drop --file users.json
+mongoimport --db fireAlarmSystem --collection firealarms --file firealarms.json
+``` 
+
 ### How to run the System
 1. Open 2 command prompts in the main directiory.
 2. Run the following commands

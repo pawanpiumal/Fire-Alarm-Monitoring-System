@@ -1,0 +1,9 @@
+{"_id":{"$oid":"5ea7e09c83e45150a03dcb05"},"status":"Active","smokeLevel":2,"co2Level":2,"roomNo":1,"floorNo":1,"lastUpdated":{"$date":"2020-04-28T07:52:57.93Z"},"__v":4}
+{"_id":{"$oid":"5ea7e09f83e45150a03dcb06"},"status":"Active","smokeLevel":2,"co2Level":5,"roomNo":2,"floorNo":2,"lastUpdated":{"$date":"2020-04-28T07:54:12.904Z"},"__v":10}
+{"_id":{"$oid":"5ea7e0a183e45150a03dcb07"},"status":"Active","smokeLevel":5,"co2Level":3,"roomNo":3,"floorNo":3,"lastUpdated":{"$date":"2020-04-28T07:54:18.832Z"},"__v":3}
+{"_id":{"$oid":"5ea7e0a283e45150a03dcb08"},"status":"Active","smokeLevel":3,"co2Level":7,"roomNo":4,"floorNo":4,"lastUpdated":{"$date":"2020-04-28T07:54:28.025Z"},"__v":2}
+{"_id":{"$oid":"5ea7e0a483e45150a03dcb09"},"status":"Active","smokeLevel":7,"co2Level":2,"roomNo":5,"floorNo":5,"lastUpdated":{"$date":"2020-04-28T07:54:48.051Z"},"__v":3}
+{"_id":{"$oid":"5ea7e0a583e45150a03dcb0a"},"status":"Active","smokeLevel":7,"co2Level":5,"roomNo":6,"floorNo":6,"lastUpdated":{"$date":"2020-04-28T07:55:58.123Z"},"__v":8}
+{"_id":{"$oid":"5ea7e0a883e45150a03dcb0b"},"status":"Not Active","smokeLevel":3,"co2Level":3,"roomNo":7,"floorNo":7,"lastUpdated":{"$date":"2020-04-28T07:56:18.148Z"},"__v":3}
+{"_id":{"$oid":"5ea7e0a983e45150a03dcb0c"},"status":"Not Active","smokeLevel":5,"co2Level":5,"roomNo":8,"floorNo":8,"lastUpdated":{"$date":"2020-04-28T07:57:48.365Z"},"__v":10}
+{"_id":{"$oid":"5ea7e0ab83e45150a03dcb0d"},"status":"Not Active","smokeLevel":8,"co2Level":8,"roomNo":9,"floorNo":9,"lastUpdated":{"$date":"2020-04-28T07:56:30.632Z"},"__v":1}
