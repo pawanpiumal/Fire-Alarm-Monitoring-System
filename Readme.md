@@ -3,6 +3,10 @@
 Watch this video to see the working system. And also the video shows how to Install, Configure and Run the System.
 [Youtube](https://youtu.be/0E9F8ukM_ig)
 
+<a href="http://www.youtube.com/watch?feature=player_embedded&v=0E9F8ukM_ig
+" target="_blank"><img src="http://img.youtube.com/vi/0E9F8ukM_ig/0.jpg" 
+alt="Fire Alarm System Youtube Video" width="240" height="180" border="10" /></a>
+
 ## How to Install
 1. Clone or Download the Project files
 2. Check whether Node and NPM are installed. To check if they are installed, run the below command in the Command Prompt
