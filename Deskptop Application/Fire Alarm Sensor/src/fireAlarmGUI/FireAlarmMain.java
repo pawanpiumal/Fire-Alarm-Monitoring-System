@@ -31,6 +31,8 @@ public class FireAlarmMain {
 	private JSlider sliderCo2;
 	private JSlider sliderSmoke;
 	private FireAlarm fireAlarm;
+	private Thread autoThread;
+	private JCheckBox chckbxAutomate;
 
 	/**
 	 * Launch the application.
@@ -43,6 +45,7 @@ public class FireAlarmMain {
 					window.frame.setVisible(true);
 					window.frame.setResizable(false);
 
+					
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -56,6 +59,30 @@ public class FireAlarmMain {
 	public FireAlarmMain() {
 		initialize();
 		updateDataInIntervals();
+		autoThread = new Thread(new Runnable() {
+			@Override
+			public void run() {
+				for (;;) {
+					try {
+						Thread.sleep(resetTime*1000);
+						int smoke = (int) (Math.random() * 10);
+						int co2 = (int) (Math.random() * 10);
+						System.out.println(smoke + " " + co2);
+						if(comboBox.getSelectedIndex()!=-1) {
+							if(chckbxAutomate.isSelected()) {
+								if (smoke <= 10 && smoke >= 0 && co2 <= 10 && co2 >= 0) {
+									sliderSmoke.setValue(smoke);
+									sliderCo2.setValue(co2);
+								}
+							}
+						}
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		});
+		autoThread.start();
 
 	}
 
@@ -66,7 +93,7 @@ public class FireAlarmMain {
 		frame = new JFrame();
 		frame.getContentPane().setBackground(Color.GRAY);
 		frame.setTitle("Fire Alarm");
-		frame.setBounds(100, 100, 289, 406);
+		frame.setBounds(100, 100, 289, 446);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 
@@ -132,7 +159,7 @@ public class FireAlarmMain {
 		JButton btnChangeData = new JButton("Change Data");
 
 		btnChangeData.setBackground(Color.LIGHT_GRAY);
-		btnChangeData.setBounds(10, 308, 253, 23);
+		btnChangeData.setBounds(10, 348, 253, 23);
 		frame.getContentPane().add(btnChangeData);
 
 		JLabel lblRoomNo = new JLabel("Room No : ");
@@ -152,8 +179,14 @@ public class FireAlarmMain {
 		frame.getContentPane().add(lblSmokeLevel);
 
 		lblTime = new JLabel("Update In :");
-		lblTime.setBounds(10, 342, 108, 14);
+		lblTime.setBounds(10, 382, 108, 14);
 		frame.getContentPane().add(lblTime);
+		
+		chckbxAutomate = new JCheckBox("Change data Automatically");
+		chckbxAutomate.setBackground(Color.GRAY);
+		chckbxAutomate.setBounds(10, 318, 234, 23);
+		frame.getContentPane().add(chckbxAutomate);
+		chckbxAutomate.setSelected(true);
 
 		chckbxStatus.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -328,5 +361,4 @@ public class FireAlarmMain {
 
 		t.start();
 	}
-
 }
